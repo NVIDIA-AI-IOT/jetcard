@@ -38,7 +38,9 @@ echo $password | sudo -S pip3 install -U jupyter jupyterlab
 echo $password | sudo -S jupyter labextension install @jupyter-widgets/jupyterlab-manager
 echo $password | sudo -S jupyter labextension install @jupyterlab/statusbar
 jupyter lab --generate-config
-jupyter notebook password
+
+# set jupyter password
+python3 -c "from notebook.auth.security import set_password; set_password('$password', '$HOME/.jupyter/jupyter_notebook_config.json')"
 
 # install jetcard
 echo $password | sudo -S python3 setup.py install
