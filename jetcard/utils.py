@@ -35,4 +35,8 @@ def get_ip_address(interface):
 
 
 def get_network_interface_state(interface):
-    return subprocess.check_output('cat /sys/class/net/%s/operstate' % interface, shell=True).decode('ascii')[:-1]
+    try:
+        with open('/sys/class/net/%s/operstate' % interface, 'r') as f:
+            return f.read()
+    except:
+        return 'down' # default to down
