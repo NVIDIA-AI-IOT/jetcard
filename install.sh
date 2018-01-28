@@ -75,3 +75,7 @@ unzip protobuf.zip
 echo $password | sudo -S python3 setup.py install
 cd slim
 echo $password | sudo -S python3 setup.py install
+
+# disable syslog to prevent large log files from collecting
+echo $password | sudo -S service rsyslog stop
+echo $password | sudo -S systemctl disable rsyslog
