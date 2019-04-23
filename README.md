@@ -17,9 +17,9 @@ projects with NVIDIA Jetson Nano.
 
 ## Projects
 
-* [JetBot](#) - DIY AI robot
+* [JetBot](#) - AI robot
 
-* [JetCam](#) - Easy camera interface
-* [JetMotor](#) - Easy motor interface
-* [JetNet](#) - Easy neural network interface
-* [JetRacer](#) - DIY AI racecar
+* [JetCam](#) - Easy to use cameras
+* [JetMotor](#) - Easy to use motors
+* [JetNet](#) - Easy to use neural networks
+* [JetRacer](#) - AI racecar
