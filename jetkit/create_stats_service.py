@@ -9,7 +9,7 @@ Description=JetKit stats display service
 [Service]
 Type=simple
 User=%s
-ExecStart=/bin/sh -c "python3 -m jetkit.display_stats"
+ExecStart=/bin/sh -c "python3 -m jetkit.stats"
 WorkingDirectory=%s
 Restart=always
 
@@ -17,7 +17,7 @@ Restart=always
 WantedBy=multi-user.target
 """
 
-STATS_SERVICE_NAME = 'jetkit_display_stats'
+STATS_SERVICE_NAME = 'jetkit_stats'
 
 
 def get_stats_service():
