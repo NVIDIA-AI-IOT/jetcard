@@ -12,7 +12,7 @@ projects with NVIDIA Jetson Nano.
     ```bash
     git clone https://github.com/NVIDIA-AI-IOT/jetkit
     cd jetkit
-    sudo ./install.sh 
+    ./install.sh 
     ```
 
 ## Projects
