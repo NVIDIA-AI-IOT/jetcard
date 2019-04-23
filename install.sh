@@ -56,3 +56,15 @@ sudo chmod 600 /var/swapfile
 sudo mkswap /var/swapfile
 sudo swapon /var/swapfile
 sudo bash -c 'echo "/var/swapfile swap swap defaults 0 0" >> /etc/fstab'
+
+# install TensorFlow models repository
+git clone https://github.com/tensorflow/models
+cd models/research
+git checkout 5f4d34fc
+wget -O protobuf.zip https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-aarch_64.zip
+# wget -O protobuf.zip https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-x86_64.zip
+unzip protobuf.zip
+./bin/protoc object_detection/protos/*.proto --python_out=.
+sudo python3 setup.py install
+cd slim
+sudo python3 setup.py install
