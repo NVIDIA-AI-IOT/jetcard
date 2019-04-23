@@ -26,7 +26,7 @@ def get_stats_service():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--output', default='jetkit_display_stats.service')
+    parser.add_argument('--output', default='jetkit_stats.service')
     args = parser.parse_args()
 
     with open(args.output, 'w') as f:
