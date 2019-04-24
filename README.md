@@ -1,8 +1,5 @@
 # JetKit
 
-JetKit is a collection of open source software that makes it easy to create 
-projects with NVIDIA Jetson Nano.
-
 ## Setup
 
 1. Flash Jetson Nano following the Getting Started Guide
