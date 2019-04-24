@@ -17,9 +17,10 @@ projects with NVIDIA Jetson Nano.
 
 ## Projects
 
-* [JetBot](#) - AI robot
-
-* [JetCam](#) - Easy to use cameras
-* [JetMotor](#) - Easy to use motors
-* [JetNet](#) - Easy to use neural networks
-* [JetRacer](#) - AI racecar
+| Project | Description |
+|---------|-------------|
+| [JetBot](http://github.com/NVIDIA-AI-IOT-private/jetbot) | An educational AI robot | 
+| [JetRacer](http://github.com/NVIDIA-AI-IOT-private/jetracer) | An educational AI racecar |
+| [JetNet](http://github.com/NVIDIA-AI-IOT-private/jetnet) | Easy to use neural networks |
+| [JetCam](http://github.com/NVIDIA-AI-IOT-private/jetmotor) | Easy to use cameras |
+| [JetMotor](http://github.com/NVIDIA-AI-IOT-private/jetnet) | Easy to use motor |
