@@ -17,6 +17,8 @@ projects with NVIDIA Jetson Nano.
 
 ## Projects
 
+These projects work out of the box after following the JetKit setup
+
 | Project | Description | URL |
 |---------|-------------|-----|
 | JetBot | An educational AI robot | http://github.com/NVIDIA-AI-IOT-private/jetbot |
