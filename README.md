@@ -24,23 +24,3 @@ Follow the [setup](#setup) to download JetCard directly or create it from scratc
     cd jetcard
     ./install.sh 
     ```
-
-## Projects
-
-These projects work out of the box with JetCard
-
-| Project | Description | URL |
-|---------|-------------|-----|
-| JetBot | An educational AI robot | https://github.com/NVIDIA-AI-IOT-private/jetbot |
-| JetRacer| An educational AI racecar | https://github.com/NVIDIA-AI-IOT-private/jetracer |
-| JetDetector | Easy to use object detectors| https://github.com/NVIDIA-AI-IOT-private/jetdetector |
-| JetCam | Easy to use cameras | https://github.com/NVIDIA-AI-IOT-private/jetcam |
-| JetMotor | Easy to use motors | https://github.com/NVIDIA-AI-IOT-private/jetmotor |
-
-Also check out these other helpful projects!
-
-| Project | Description | URL |
-|---------|-------------|-----|
-| jetson-inference | TensorRT accelerated workflows on Jetson | https://github.com/dusty-nv/jetson-inference |
-| tf_trt_models | TF-TRT accelerated models on Jetson | https://github.com/NVIDIA-AI-IOT/tf_trt_models |
-| tf_to_trt_image_classification | Tensorflow to TensorRT on Jetson | https://github.com/NVIDIA-AI-IOT/tf_to_trt_image_classification |
