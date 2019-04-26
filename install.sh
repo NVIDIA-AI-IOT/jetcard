@@ -35,20 +35,20 @@ sudo jupyter labextension install @jupyterlab/statusbar
 jupyter lab --generate-config
 jupyter notebook password
 
-# install jetkit
+# install jetcard
 sudo python3 setup.py install
 
-# install jetkit stats service
-python3 -m jetkit.create_stats_service
-sudo mv jetkit_stats.service /etc/systemd/system/jetkit_stats.service
-sudo systemctl enable jetkit_stats
-sudo systemctl start jetkit_stats
+# install jetcard stats service
+python3 -m jetcard.create_stats_service
+sudo mv jetcard_stats.service /etc/systemd/system/jetcard_stats.service
+sudo systemctl enable jetcard_stats
+sudo systemctl start jetcard_stats
 
-# install jetkit jupyter service
-python3 -m jetkit.create_jupyter_service
-sudo mv jetkit_jupyter.service /etc/systemd/system/jetkit_jupyter.service
-sudo systemctl enable jetkit_jupyter
-sudo systemctl start jetkit_jupyter
+# install jetcard jupyter service
+python3 -m jetcard.create_jupyter_service
+sudo mv jetcard_jupyter.service /etc/systemd/system/jetcard_jupyter.service
+sudo systemctl enable jetcard_jupyter
+sudo systemctl start jetcard_jupyter
 
 # make swapfile
 sudo fallocate -l 4G /var/swapfile

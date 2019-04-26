@@ -19,7 +19,7 @@ WantedBy=multi-user.target
 """
 
 
-JUPYTER_SERVICE_NAME = 'jetkit_jupyter'
+JUPYTER_SERVICE_NAME = 'jetcard_jupyter'
 
 
 def get_jupyter_service(working_directory):
@@ -36,7 +36,7 @@ if __name__ == '__main__':
         type=str,
         help='The directory for Jupyter Lab',
         default=os.path.expanduser('~'))
-    parser.add_argument('--output', default='jetkit_jupyter.service')
+    parser.add_argument('--output', default='jetcard_jupyter.service')
     args = parser.parse_args()
 
     with open(args.output, 'w') as f:
