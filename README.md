@@ -2,7 +2,7 @@
 
 ## Setup
 
-1. Flash Jetson Nano following the Getting Started Guide
+1. Flash Jetson Nano following the [Getting Started Guide](https://developer.nvidia.com/embedded/learn/get-started-jetson-nano-devkit)
 
 2. Run the JetKit installation script
 
