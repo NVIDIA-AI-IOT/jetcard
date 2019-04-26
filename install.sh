@@ -1,4 +1,7 @@
 #!/bin/sh
+
+set -e
+
 # enable i2c permissions
 sudo usermod -aG i2c $USER
 
