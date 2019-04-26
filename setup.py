@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='jetkit',
+    name='jetcard',
     version='0.0.0',
     description='Easily make projects with NVIDIA Jetson Nano',
     packages=find_packages(),
