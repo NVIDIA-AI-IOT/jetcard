@@ -24,3 +24,11 @@ Follow the steps below to download JetCard directly or create it from scratch.
     cd jetcard
     ./install.sh 
     ```
+Note: You need to change password in the install script.
+     ```bash
+     cd jetcard
+     vi install.sh
+     (line 4) set your workstation password: password="nvidia"
+     ESC : wq (Save and Exit)
+     ./install.sh
+     ```
