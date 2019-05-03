@@ -1,7 +1,9 @@
 #!/bin/sh
 
 set -e
-password="nvidia"
+
+password=$1
+
 # enable i2c permissions
 echo $password | sudo -S usermod -aG i2c $USER
 
