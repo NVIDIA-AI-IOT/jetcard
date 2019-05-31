@@ -24,3 +24,22 @@ Follow the steps below to download JetCard directly or create it from scratch.
     cd jetcard
     ./install.sh <password>
     ```
+    
+## Create SD card image snapshot
+
+If you've applied modifications to the base SD card image that you want to re-use, do the following to create a compressed SD card image
+
+1.  Remove the SD card from your Jetson Nano
+
+2.  Insert the SD card into a Linux host computer
+3.  Determine where the SD card is located using ``sudo fdisk -l``.  We assume this is at ``/dev/sdb`` for next example
+4.  Copy the contents of the SD card to a file named ``jetcard_image.img``
+
+    ```bash
+    sudo dd bs=4M if=/dev/sdb of=jetcard_image.img status=progress
+    ```
+5.  Compress the SD card image using zip
+
+    ```bash
+    zip jetcard_image.zip jetcard_image.img
+    ```
