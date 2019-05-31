@@ -32,7 +32,7 @@ If you've applied modifications to the base SD card image that you want to re-us
 1.  Remove the SD card from your Jetson Nano
 
 2.  Insert the SD card into a Linux host computer
-3.  Determine where the SD card is located using ``sudo fdisk -l``.  We assume this is at ``/dev/sdb`` for next example
+3.  Determine where the SD card is located using ``sudo fdisk -l``.  We'll assume this is at ``/dev/sdb``
 4.  Copy the contents of the SD card to a file named ``jetcard_image.img``
 
     ```bash
