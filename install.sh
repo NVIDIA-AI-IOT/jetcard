@@ -44,8 +44,8 @@ sudo python3 -m pip install git+https://github.com/ipython/traitlets@master
 echo "### install jupyter lab"
 sudo apt install -y nodejs npm
 sudo pip3 install -U jupyter jupyterlab
-sudo jupyter labextension install @jupyter-widgets/jupyterlab-manager
-sudo jupyter labextension install @jupyterlab/statusbar
+jupyter labextension install @jupyter-widgets/jupyterlab-manager --user
+jupyter labextension install @jupyterlab/statusbar --user
 jupyter lab --generate-config
 jupyter notebook password
 
