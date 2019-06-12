@@ -46,7 +46,8 @@ sudo pip3 install -U jupyter jupyterlab
 sudo jupyter labextension install @jupyter-widgets/jupyterlab-manager
 sudo jupyter labextension install @jupyterlab/statusbar
 jupyter lab --generate-config
-jupyter notebook password
+#jupyter notebook password
+cp files/jupyter_notebook_config.json ~/.jupyter/ # default password : `jetson`
 
 echo "### install jetcard"
 sudo python3 setup.py install
