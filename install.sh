@@ -20,13 +20,14 @@ sudo apt-get update
 sudo apt install -y python3-pip python3-pil python3-smbus python3-matplotlib cmake
 sudo pip3 install -U --upgrade numpy
 
-echo "### install tensorflow"
-sudo apt-get install -y libhdf5-serial-dev hdf5-tools
-sudo apt-get install -y zlib1g-dev zip libjpeg8-dev libhdf5-dev
-sudo pip3 install -U numpy grpcio absl-py py-cpuinfo psutil portpicker grpcio six mock requests gast h5py astor termcolor
-sudo pip3 install -U --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v42 tensorflow-gpu
+#echo "### install tensorflow"
+#sudo apt-get install -y libhdf5-serial-dev hdf5-tools
+#sudo apt-get install -y zlib1g-dev zip libjpeg8-dev libhdf5-dev
+#sudo pip3 install -U numpy grpcio absl-py py-cpuinfo psutil portpicker grpcio six mock requests gast h5py astor termcolor
+#sudo pip3 install -U --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v42 tensorflow-gpu
 
 echo "### install pytorch"
+sudo apt-get install -y zlib1g-dev libjpeg8-dev
 wget https://nvidia.box.com/shared/static/veo87trfaawj5pfwuqvhl6mzc5b55fbj.whl -O torch-1.1.0a0+b457266-cp36-cp36m-linux_aarch64.whl
 sudo pip3 install -U numpy torch-1.1.0a0+b457266-cp36-cp36m-linux_aarch64.whl
 sudo pip3 install -U torchvision
