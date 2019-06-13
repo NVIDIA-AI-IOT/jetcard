@@ -16,7 +16,7 @@ echo $password | sudo -S pip3 install -U --upgrade numpy
 echo $password | sudo -S apt-get install -y libhdf5-serial-dev hdf5-tools
 echo $password | sudo -S apt-get install -y zlib1g-dev zip libjpeg8-dev libhdf5-dev
 echo $password | sudo -S pip3 install -U numpy grpcio absl-py py-cpuinfo psutil portpicker grpcio six mock requests gast h5py astor termcolor
-echo $password | sudo -S pip3 install -U --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v42 tensorflow-gpu
+echo $password | sudo -S pip3 install -U --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v42 tensorflow-gpu==1.13.1+nv19.5
 
 # install pytorch
 wget https://nvidia.box.com/shared/static/veo87trfaawj5pfwuqvhl6mzc5b55fbj.whl -O torch-1.1.0a0+b457266-cp36-cp36m-linux_aarch64.whl
