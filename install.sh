@@ -81,16 +81,16 @@ echo $password | sudo -S service rsyslog stop
 echo $password | sudo -S systemctl disable rsyslog
 
 # install jupyter_clickable_image_widget
-echo $password | sudo npm install -g typescript
+echo $password | sudo -S npm install -g typescript
 git clone https://github.com/jaybdub/jupyter_clickable_image_widget
 cd jupyter_clickable_image_widget
 
 # allow next command to fail
 set +e
-echo $password | sudo python3 setup.py build
+echo $password | sudo -S python3 setup.py build
 
 set -e
-echo $password | sudo npm run build
-echo $password | sudo pip3 install .
-echo $password | sudo jupyter labextension install .
-echo $password | sudo jupyter labextension install @jupyter-widgets/jupyterlab-manager
+echo $password | sudo -S npm run build
+echo $password | sudo -S pip3 install .
+echo $password | sudo -S jupyter labextension install .
+echo $password | sudo -S jupyter labextension install @jupyter-widgets/jupyterlab-manager
