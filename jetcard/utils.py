@@ -33,6 +33,27 @@ def get_ip_address(interface):
     except:
         return None
 
+def get_power_mode():
+    return subprocess.check_output("nvpmodel -q | grep -o '5W\|MAXN'", shell = True ).decode('utf-8')
+
+def get_power_usage():
+    power_read_data = "/sys/devices/50000000.host1x/546c0000.i2c/i2c-6/6-0040/iio:device0/in_power0_input"
+    with open(power_read_data, 'r') as p:
+        return str(round(int(p.read())/1000,1))
+
+def get_cpu_usage():
+    return subprocess.check_output("top -bn1 | grep load | awk '{printf \"%.2f\", $(NF-2)}'", shell = True ).decode('utf-8')
+
+def get_gpu_usage():
+    gpu_read_data= "/sys/devices/platform/host1x/57000000.gpu/load"
+    with open(gpu_read_data,'r') as g:
+        return str(g.read())
+
+def get_memory_usage():
+    return subprocess.check_output("free -m | awk 'NR==2{printf \"%.2f%%\", $3*100/$2 }'", shell = True ).decode('utf-8')
+
+def get_disk_usage():
+    return subprocess.check_output("df -h | awk '$NF==\"/\"{printf \"%s\", $5}'", shell = True ).decode('utf-8')
 
 def get_network_interface_state(interface):
     try:
