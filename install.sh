@@ -10,6 +10,7 @@ echo $password | sudo -S usermod -aG i2c $USER
 # install pip and some apt dependencies
 echo $password | sudo -S apt-get update
 echo $password | sudo -S apt install -y python3-pip python3-pil python3-smbus python3-matplotlib cmake
+echo $password | sudo -S pip3 install flask
 echo $password | sudo -S pip3 install -U --upgrade numpy
 
 # install tensorflow
@@ -45,11 +46,11 @@ python3 -c "from notebook.auth.security import set_password; set_password('$pass
 # install jetcard
 echo $password | sudo -S python3 setup.py install
 
-# install jetcard stats service
-python3 -m jetcard.create_stats_service
-echo $password | sudo -S mv jetcard_stats.service /etc/systemd/system/jetcard_stats.service
-echo $password | sudo -S systemctl enable jetcard_stats
-echo $password | sudo -S systemctl start jetcard_stats
+# install jetcard display service
+python3 -m jetcard.create_display_service
+echo $password | sudo -S mv jetcard_display.service /etc/systemd/system/jetcard_display.service
+echo $password | sudo -S systemctl enable jetcard_display
+echo $password | sudo -S systemctl start jetcard_display
 
 # install jetcard jupyter service
 python3 -m jetcard.create_jupyter_service
