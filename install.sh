@@ -32,7 +32,7 @@ sudo pip3 install -U --upgrade numpy
 sudo apt-get install -y libhdf5-serial-dev hdf5-tools
 sudo apt-get install -y zlib1g-dev zip libjpeg8-dev libhdf5-dev
 sudo pip3 install -U numpy grpcio absl-py py-cpuinfo psutil portpicker grpcio six mock requests gast h5py astor termcolor
-sudo pip3 install -U --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v42 tensorflow-gpu
+# sudo pip3 install -U --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v42 tensorflow-gpu
 
 # install pytorch
 wget https://nvidia.box.com/shared/static/veo87trfaawj5pfwuqvhl6mzc5b55fbj.whl -O torch-1.1.0a0+b457266-cp36-cp36m-linux_aarch64.whl
@@ -81,16 +81,16 @@ sudo swapon /var/swapfile
 sudo bash -c 'echo "/var/swapfile swap swap defaults 0 0" >> /etc/fstab'
 
 # install TensorFlow models repository
-git clone https://github.com/tensorflow/models
-cd models/research
-git checkout 5f4d34fc
-wget -O protobuf.zip https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-aarch_64.zip
-# wget -O protobuf.zip https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-x86_64.zip
-unzip protobuf.zip
-./bin/protoc object_detection/protos/*.proto --python_out=.
-sudo python3 setup.py install
-cd slim
-sudo python3 setup.py install
+# git clone https://github.com/tensorflow/models
+# cd models/research
+# git checkout 5f4d34fc
+# wget -O protobuf.zip https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-aarch_64.zip
+# # wget -O protobuf.zip https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-x86_64.zip
+# unzip protobuf.zip
+# ./bin/protoc object_detection/protos/*.proto --python_out=.
+# sudo python3 setup.py install
+# cd slim
+# sudo python3 setup.py install
 
 # disable syslog to prevent large log files from collecting
 sudo service rsyslog stop
