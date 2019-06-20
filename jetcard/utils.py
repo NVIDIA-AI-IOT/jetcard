@@ -97,4 +97,4 @@ def disk_usage():
     Returns:
         float: The current disk usage fraction.
     """
-    return float(subprocess.check_output("df -h | awk '$NF==\"/\"{printf \"%s\", $5}'", shell = True ).decode('utf-8')) / 100.0
+    return float(subprocess.check_output("df -h | awk '$NF==\"/\"{printf \"%s\", $5}'", shell = True ).decode('utf-8').strip('%')) / 100.0

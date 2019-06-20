@@ -26,7 +26,7 @@ class DisplayServer(object):
             self.draw.rectangle((0, 0, self.image.width, self.image.height), outline=0, fill=0)
 
             # set IP address
-            top = 2
+            top = -2
             if ip_address('eth0') is not None:
                 self.draw.text((4, top), 'IP: ' + str(ip_address('eth0')), font=self.font, fill=255)
             elif ip_address('wlan0') is not None:
@@ -34,24 +34,26 @@ class DisplayServer(object):
             else:
                 self.draw.text((4, top), 'IP: not available')
 
+            top = 6
+            power_mode_str = power_mode()
+            self.draw.text((4, top), 'MODE: ' + power_mode_str, font=self.font, fill=255)
+            
             # set stats headers
-            top = 12
+            top = 14
             offset = 3 * 8
-            headers = ['NVP', 'PWR', 'CPU', 'GPU', 'RAM']
+            headers = ['PWR', 'CPU', 'GPU', 'RAM', 'DSK']
             for i, header in enumerate(headers):
                 self.draw.text((i * offset + 4, top), header, font=self.font, fill=255)
 
             # set stats fields
             top = 22
-            power_mode_str = power_mode()
-            if power_mode_str == 'MAXN':
-                power_mode_str = '10W'
             power_watts = '%.1f' % power_usage()
             gpu_percent = '%02d%%' % int(round(gpu_usage() * 100.0, 1))
             cpu_percent = '%02d%%' % int(round(cpu_usage() * 100.0, 1))
             ram_percent = '%02d%%' % int(round(memory_usage() * 100.0, 1))
+            disk_percent = '%02d%%' % int(round(disk_usage() * 100.0, 1))
             
-            entries = [power_mode_str, power_watts, cpu_percent, gpu_percent, ram_percent]
+            entries = [power_watts, cpu_percent, gpu_percent, ram_percent, disk_percent]
             for i, entry in enumerate(entries):
                 self.draw.text((i * offset + 4, top), entry, font=self.font, fill=255)
 
