@@ -11,9 +11,9 @@ Follow the steps below to download JetCard directly or create it from scratch.
 
 ## Setup
 
-### Option 1 - SD card (Jetson Nano only)
+### Option 1 - Use SD card image
 
-### Option 2 - Installation script
+### Option 2 - Run installation script
 
 1. Flash Jetson Nano following the [Getting Started Guide](https://developer.nvidia.com/embedded/learn/get-started-jetson-nano-devkit)
 
