@@ -11,9 +11,9 @@ Follow the steps below to download JetCard directly or create it from scratch.
 
 ## Setup
 
-### Option 1 - Use pre-configured SD card (Jetson Nano)
+### Option 1 - SD card (Jetson Nano only)
 
-### Option 2 - Run installation script (Jetson Nano / TX2 / Xavier)
+### Option 2 - Installation script
 
 1. Flash Jetson Nano following the [Getting Started Guide](https://developer.nvidia.com/embedded/learn/get-started-jetson-nano-devkit)
 
@@ -25,7 +25,7 @@ Follow the steps below to download JetCard directly or create it from scratch.
     ./install.sh <password>
     ```
     
-## Create SD card image (Jetson Nano)
+## Create SD card image
 
 If you've applied modifications to the base SD card image that you want to re-use, do the following to create a compressed SD card image
 
