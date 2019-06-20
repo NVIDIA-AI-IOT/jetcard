@@ -1,6 +1,6 @@
 # JetCard
 
-JetCard is a system configuration for NVIDIA Jetson that makes it easy to get started creating AI projects.  It comes pre-loaded with
+JetCard is a system configuration for NVIDIA Jetson that makes it easy to get started with AI.  It comes pre-loaded with
 
 * A Jupyter Lab server that starts on boot for easy web programming
 
