@@ -12,6 +12,3 @@ cat $FILE
 
 echo "### Restarting systemd-timesyncd.service ..."
 sudo systemctl restart systemd-timesyncd.service
-
-echo "### 'systemctl status systemd-timesyncd' ..."
-systemctl status systemd-timesyncd
