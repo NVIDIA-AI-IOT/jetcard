@@ -11,6 +11,8 @@ Follow the steps below to download JetCard directly or create it from scratch.
 
 ## Setup
 
+Select one of the options below and follow the instructions to set up your Jetson.
+
 ### Option 1 - Use SD card image
 
 ### Option 2 - Run installation script
