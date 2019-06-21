@@ -56,6 +56,9 @@ Pick an option below and follow the instructions to begin web programming Jetson
 1. Power on the Jetson platform configured using JetCard
 
 2. Connect the Jetson to the same network as your desktop computer via Ethernet or WiFi
+
+    > If you want to connect your Jetson to WiFi, but don't have a monitor and keyboard, you can connect via device mode (see below),       open a terminal, and then use the ``nmcli`` tool to connect to a WiFi network.  Find more details [below](#extras).
+    
 3. Determine the IP address ``jetson_ip_address``
 
     > If you have the PiOLED display attached, it will display on that screen.  Otherwise, you will need to connect a monitor, open a terminal, and read the IP using ``ifconfig``.
@@ -73,6 +76,25 @@ If you do not occupy the Jetson Nano's micro USB port for power, you can use it 
 4. Sign in using the default password ``jetson``
 
 ## Extras
+
+### Connect to WiFi from terminal
+
+1. Re-scan available WiFi networks
+
+    ```bash
+    nmcli device wifi rescan
+    ```
+
+2. List available WiFi networks, and find the ``ssid_name`` of your network.
+
+    ```bash
+    nmcli device wifi list
+    ```
+3. Connect to a selected WiFi network
+
+    ```bash
+    nmcli device wifi connect <ssid_name> password <password>
+    ```
 
 ### Create SD card snapshot
 
