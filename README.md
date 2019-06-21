@@ -27,6 +27,8 @@ Follow the steps below to download JetCard directly or create it from scratch.
 
 You may now insert the SD card into the Jetson Nano, power on, and enjoy the pre-configured system!
 
+> Please note, the password for the pre-built SD card is ``jetson``
+
 ### Option 2 - Create JetCard from scratch
 
 1. Flash Jetson Nano following the [Getting Started Guide](https://developer.nvidia.com/embedded/learn/get-started-jetson-nano-devkit)
@@ -42,6 +44,31 @@ You may now insert the SD card into the Jetson Nano, power on, and enjoy the pre
     ```
     
 Once the ``install.sh`` script finishes, your system should be configured identically to the SD card image mentioned above.
+
+## Usage
+
+### Connecting
+
+#### Option 1 - Ethernet / WiFi
+
+1. Power on the Jetson platform configured using JetCard
+
+2. Connect the Jetson to the same network as your desktop computer via Ethernet or WiFi
+3. Determine the IP address ``jetson_ip_address``
+
+    > If you have the PiOLED display attached, it will display on that screen.  Otherwise, you will need to connect a monitor, open a terminal, and read the IP using ``ifconfig``.
+4. Connect to the Jetson platform from a desktop computer by navigating to ``http://<jetson_ip_address>:8888``
+5. Sign in using the default password ``jetson``
+
+#### Option 2 - USB device mode
+
+If you do not occupy the Jetson Nano's micro USB port for power, you can use it to connect directly from a desktop PC!  The USB device mode IP address is ``192.168.55.1``
+
+1. Power on the Jetson platform configured using JetCard
+
+2. Connect the Jetson platform to the desktop computer via micro USB
+3. On the desktop computer, navigate to ``http://192.168.55.1:8888`` from a web browser
+4. Sign in using the default password ``jetson``
 
 ## Create SD card image snapshot
 
