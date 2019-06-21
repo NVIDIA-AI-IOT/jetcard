@@ -70,7 +70,9 @@ If you do not occupy the Jetson Nano's micro USB port for power, you can use it 
 3. On the desktop computer, navigate to ``http://192.168.55.1:8888`` from a web browser
 4. Sign in using the default password ``jetson``
 
-## Create SD card image snapshot
+## Extras
+
+### Create SD card snapshot
 
 If you've applied modifications to the base SD card image that you want to re-use, do the following to create a compressed SD card image
 
