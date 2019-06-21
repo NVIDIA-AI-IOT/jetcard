@@ -1,0 +1,14 @@
+#
+# Copyright (c) 2019, NVIDIA CORPORATION.  All rights reserved.
+#
+
+[Unit]
+Description=Resize SD Card root partition and filesystem
+Before=nvfb.service
+
+[Service]
+Type=oneshot
+ExecStart=/etc/systemd/nvresizefs.sh
+
+[Install]
+WantedBy=multi-user.target

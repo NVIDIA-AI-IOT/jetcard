@@ -4,19 +4,40 @@ set -e
 
 password=$1
 
+# fix NTP server
+FILE="/etc/systemd/timesyncd.conf"
+echo $password | sudo -S bash -c "echo 'NTP=0.arch.pool.ntp.org 1.arch.pool.ntp.org 2.arch.pool.ntp.org 3.arch.pool.ntp.org' >> $FILE"
+echo $password | sudo -S bash -c "echo 'FallbackNTP=0.pool.ntp.org 1.pool.ntp.org 0.us.pool.ntp.org' >> $FILE"
+cat $FILE
+echo $password | sudo -S systemctl restart systemd-timesyncd.service
+
+# fix USB device mode
+DIR="/opt/nvidia/l4t-usb-device-mode/"
+echo $password | sudo -S cp $DIR/nv-l4t-usb-device-mode.sh $DIR/nv-l4t-usb-device-mode.sh.orig
+echo $password | sudo -S cp $DIR/nv-l4t-usb-device-mode-stop.sh $DIR/nv-l4t-usb-device-mode-stop.sh.orig
+cat $DIR/nv-l4t-usb-device-mode.sh | grep dhcpd_.*=
+cat $DIR/nv-l4t-usb-device-mode-stop.sh | grep dhcpd_.*=
+echo $password | sudo -S sed -i 's|${script_dir}/dhcpd.leases|/run/dhcpd.leases|g' $DIR/nv-l4t-usb-device-mode.sh
+echo $password | sudo -S sed -i 's|${script_dir}/dhcpd.pid|/run/dhcpd.pid|g' $DIR/nv-l4t-usb-device-mode.sh
+echo $password | sudo -S sed -i 's|${script_dir}/dhcpd.leases|/run/dhcpd.leases|g' $DIR/nv-l4t-usb-device-mode-stop.sh
+echo $password | sudo -S sed -i 's|${script_dir}/dhcpd.pid|/run/dhcpd.pid|g' $DIR/nv-l4t-usb-device-mode-stop.sh
+cat $DIR/nv-l4t-usb-device-mode.sh | grep dhcpd_.*=
+cat $DIR/nv-l4t-usb-device-mode-stop.sh | grep dhcpd_.*=
+
 # enable i2c permissions
 echo $password | sudo -S usermod -aG i2c $USER
 
 # install pip and some apt dependencies
 echo $password | sudo -S apt-get update
 echo $password | sudo -S apt install -y python3-pip python3-pil python3-smbus python3-matplotlib cmake
+echo $password | sudo -S pip3 install -U pip
+echo $password | sudo -S pip3 install flask
 echo $password | sudo -S pip3 install -U --upgrade numpy
 
 # install tensorflow
-echo $password | sudo -S apt-get install -y libhdf5-serial-dev hdf5-tools
-echo $password | sudo -S apt-get install -y zlib1g-dev zip libjpeg8-dev libhdf5-dev
-echo $password | sudo -S pip3 install -U numpy grpcio absl-py py-cpuinfo psutil portpicker grpcio six mock requests gast h5py astor termcolor
-echo $password | sudo -S pip3 install -U --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v42 tensorflow-gpu
+echo $password | sudo -S apt-get install -y libhdf5-serial-dev hdf5-tools libhdf5-dev zlib1g-dev zip libjpeg8-dev
+echo $password | sudo -S pip3 install -U numpy grpcio absl-py py-cpuinfo psutil portpicker six mock requests gast h5py astor termcolor protobuf keras-applications keras-preprocessing wrapt google-pasta
+echo $password | sudo -S pip3 install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v42 tensorflow-gpu
 
 # install pytorch
 wget https://nvidia.box.com/shared/static/veo87trfaawj5pfwuqvhl6mzc5b55fbj.whl -O torch-1.1.0a0+b457266-cp36-cp36m-linux_aarch64.whl
@@ -27,7 +48,8 @@ echo $password | sudo -S pip3 install -U torchvision
 echo $password | sudo -S groupadd -f -r gpio
 echo $password | sudo -S usermod -a -G gpio $USER
 echo $password | sudo -S cp /opt/nvidia/jetson-gpio/etc/99-gpio.rules /etc/udev/rules.d/
-echo $password | sudo -S udevadm control --reload-rules && sudo udevadm trigger
+echo $password | sudo -S udevadm control --reload-rules
+echo $password | sudo -S udevadm trigger
 
 # install traitlets (master)
 echo $password | sudo -S python3 -m pip install git+https://github.com/ipython/traitlets@master
@@ -45,11 +67,11 @@ python3 -c "from notebook.auth.security import set_password; set_password('$pass
 # install jetcard
 echo $password | sudo -S python3 setup.py install
 
-# install jetcard stats service
-python3 -m jetcard.create_stats_service
-echo $password | sudo -S mv jetcard_stats.service /etc/systemd/system/jetcard_stats.service
-echo $password | sudo -S systemctl enable jetcard_stats
-echo $password | sudo -S systemctl start jetcard_stats
+# install jetcard display service
+python3 -m jetcard.create_display_service
+echo $password | sudo -S mv jetcard_display.service /etc/systemd/system/jetcard_display.service
+echo $password | sudo -S systemctl enable jetcard_display
+echo $password | sudo -S systemctl start jetcard_display
 
 # install jetcard jupyter service
 python3 -m jetcard.create_jupyter_service
