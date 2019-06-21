@@ -9,11 +9,11 @@ JetCard is an SD card image that makes it easy to get started with AI.  It comes
 
 After configuring your system using JetCard, you can get started prototyping AI projects from your web browser in Python right away.
 
-## Setup
+### Setup
 
 Follow the steps below to download JetCard directly or create it from scratch.
 
-### Option 1 - Download JetCard directly
+#### Option 1 - Download JetCard directly
 
 1. Download the JetCard image [jetcard_v0p0p0.img](https://drive.google.com/open?id=1wXD1CwtxiH5Mz4uSmIZ76fd78zDQltW_) onto a Windows, Linux or Mac *desktop machine*
     
@@ -25,7 +25,7 @@ Follow the steps below to download JetCard directly or create it from scratch.
 
 You may now insert the SD card into the Jetson Nano, power on, and enjoy the pre-configured system!
 
-### Option 2 - Create JetCard from scratch
+#### Option 2 - Create JetCard from scratch
 
 1. Flash Jetson Nano following the [Getting Started Guide](https://developer.nvidia.com/embedded/learn/get-started-jetson-nano-devkit)
 
@@ -41,7 +41,7 @@ You may now insert the SD card into the Jetson Nano, power on, and enjoy the pre
     
 Once the ``install.sh`` script finishes, your system should be configured identically to the SD card image mentioned above.
 
-## Create SD card image snapshot
+### Create SD card image snapshot
 
 If you've applied modifications to the base SD card image that you want to re-use, do the following to create a compressed SD card image
 
