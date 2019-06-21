@@ -12,6 +12,9 @@ class DisplayServer(object):
     
     def __init__(self, *args, **kwargs):
         self.display = Adafruit_SSD1306.SSD1306_128_32(rst=None, i2c_bus=1, gpio=1) 
+        self.display.begin()
+        self.display.clear()
+        self.display.display()
         self.font = PIL.ImageFont.load_default()
         self.image = PIL.Image.new('1', (self.display.width, self.display.height))
         self.draw = PIL.ImageDraw.Draw(self.image)
@@ -118,3 +121,4 @@ def set_text(text):
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port='8000', debug=False)
+
