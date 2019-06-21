@@ -49,6 +49,8 @@ Once the ``install.sh`` script finishes, your system should be configured identi
 
 ### Connecting
 
+Pick an option below and follow the instructions to begin web programming Jetson from a desktop computer using Jupyter Lab.
+
 #### Option 1 - Ethernet / WiFi
 
 1. Power on the Jetson platform configured using JetCard
