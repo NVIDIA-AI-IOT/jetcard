@@ -9,7 +9,7 @@ JetCard is a system configuration that makes it easy to get started with AI.  It
 
 After configuring your system using JetCard, you can get started prototyping AI projects from your web browser in Python right away.
 
-If you find an issue, please let us know!
+If you find an issue, please [let us know](../..//issues)!
 
 ## Setup
 
