@@ -79,6 +79,8 @@ If you do not occupy the Jetson Nano's micro USB port for power, you can use it 
 
 ### Connect to WiFi from terminal
 
+To connect your Jetson to a WiFi network from a terminal, follow these steps
+
 1. Re-scan available WiFi networks
 
     ```bash
