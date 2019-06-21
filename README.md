@@ -7,7 +7,7 @@ JetCard is an SD card image that makes it easy to get started with AI.  It comes
 * A script to display the Jetson's IP address (and other stats)
 * The popular deep learning frameworks PyTorch and TensorFlow
 
-After configuring your system using JetCard, you can get started prototyping AI projects in Python right away.
+After configuring your system using JetCard, you can get started prototyping AI projects from your web browser in Python right away.
 
 ## Setup
 
