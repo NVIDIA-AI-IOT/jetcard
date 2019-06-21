@@ -13,7 +13,7 @@ Follow the steps below to download JetCard directly or create it from scratch.
 
 ### Option 1 - Download JetCard directly
 
-1. Download the JetCard image [jetcard_v0p0p0.img](https://drive.google.com/open?id=1wXD1CwtxiH5Mz4uSmIZ76fd78zDQltW_) onto Windows, Linux or Mac *desktop machine*
+1. Download the JetCard image [jetcard_v0p0p0.img](https://drive.google.com/open?id=1wXD1CwtxiH5Mz4uSmIZ76fd78zDQltW_) onto a Windows, Linux or Mac *desktop machine*
     
     > You can check it against this [md5sum](https://drive.google.com/open?id=1356ZBrYUWaTgbV50UMB1uCfWrNcd6PEF)
 
