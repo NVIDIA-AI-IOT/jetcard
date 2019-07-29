@@ -4,26 +4,6 @@ set -e
 
 password=$1
 
-# fix NTP server
-FILE="/etc/systemd/timesyncd.conf"
-echo $password | sudo -S bash -c "echo 'NTP=0.arch.pool.ntp.org 1.arch.pool.ntp.org 2.arch.pool.ntp.org 3.arch.pool.ntp.org' >> $FILE"
-echo $password | sudo -S bash -c "echo 'FallbackNTP=0.pool.ntp.org 1.pool.ntp.org 0.us.pool.ntp.org' >> $FILE"
-cat $FILE
-echo $password | sudo -S systemctl restart systemd-timesyncd.service
-
-# fix USB device mode
-DIR="/opt/nvidia/l4t-usb-device-mode/"
-echo $password | sudo -S cp $DIR/nv-l4t-usb-device-mode.sh $DIR/nv-l4t-usb-device-mode.sh.orig
-echo $password | sudo -S cp $DIR/nv-l4t-usb-device-mode-stop.sh $DIR/nv-l4t-usb-device-mode-stop.sh.orig
-cat $DIR/nv-l4t-usb-device-mode.sh | grep dhcpd_.*=
-cat $DIR/nv-l4t-usb-device-mode-stop.sh | grep dhcpd_.*=
-echo $password | sudo -S sed -i 's|${script_dir}/dhcpd.leases|/run/dhcpd.leases|g' $DIR/nv-l4t-usb-device-mode.sh
-echo $password | sudo -S sed -i 's|${script_dir}/dhcpd.pid|/run/dhcpd.pid|g' $DIR/nv-l4t-usb-device-mode.sh
-echo $password | sudo -S sed -i 's|${script_dir}/dhcpd.leases|/run/dhcpd.leases|g' $DIR/nv-l4t-usb-device-mode-stop.sh
-echo $password | sudo -S sed -i 's|${script_dir}/dhcpd.pid|/run/dhcpd.pid|g' $DIR/nv-l4t-usb-device-mode-stop.sh
-cat $DIR/nv-l4t-usb-device-mode.sh | grep dhcpd_.*=
-cat $DIR/nv-l4t-usb-device-mode-stop.sh | grep dhcpd_.*=
-
 # enable i2c permissions
 echo $password | sudo -S usermod -aG i2c $USER
 
