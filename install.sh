@@ -81,8 +81,8 @@ cd slim
 echo $password | sudo -S python3 setup.py install
 
 # disable syslog to prevent large log files from collecting
-echo $password | sudo -S service rsyslog stop
-echo $password | sudo -S systemctl disable rsyslog
+#echo $password | sudo -S service rsyslog stop
+#echo $password | sudo -S systemctl disable rsyslog
 
 # install jupyter_clickable_image_widget
 echo $password | sudo -S npm install -g typescript
