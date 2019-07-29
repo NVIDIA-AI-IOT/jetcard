@@ -98,3 +98,6 @@ echo $password | sudo -S npm run build
 echo $password | sudo -S pip3 install .
 echo $password | sudo -S jupyter labextension install .
 echo $password | sudo -S jupyter labextension install @jupyter-widgets/jupyterlab-manager
+
+# install remaining dependencies for projects
+sudo apt-get install python-setuptools
