@@ -39,8 +39,11 @@ function cleanup()
 	rm "/etc/systemd/system/multi-user.target.wants/nvresizefs.service"
 }
 
-if [ -e "/proc/device-tree/model" ]; then
-	model="$(tr -d '\0' < /proc/device-tree/model)"
+if [ -e "/proc/device-tree/compatible" ]; then
+	model="$(tr -d '\0' < /proc/device-tree/compatible)"
+	if [[ "${model}" =~ "jetson-nano" ]]; then
+		model="jetson-nano"
+	fi
 fi
 
 if [ "${model}" != "jetson-nano" ]; then
