@@ -40,10 +40,10 @@ function cleanup()
 }
 
 if [ -e "/proc/device-tree/compatible" ]; then
-  model="$(tr -d '\0' < /proc/device-tree/compatible)"
-  if [[ "${model}" =~ "jetson-nano" ]]; then
-    model="jetson-nano"
-  fi
+	model="$(tr -d '\0' < /proc/device-tree/compatible)"
+	if [[ "${model}" =~ "jetson-nano" ]]; then
+		model="jetson-nano"
+	fi
 fi
 
 if [ "${model}" != "jetson-nano" ]; then

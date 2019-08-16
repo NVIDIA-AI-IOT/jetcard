@@ -4,26 +4,6 @@ set -e
 
 password=$1
 
-# fix NTP server
-FILE="/etc/systemd/timesyncd.conf"
-echo $password | sudo -S bash -c "echo 'NTP=0.arch.pool.ntp.org 1.arch.pool.ntp.org 2.arch.pool.ntp.org 3.arch.pool.ntp.org' >> $FILE"
-echo $password | sudo -S bash -c "echo 'FallbackNTP=0.pool.ntp.org 1.pool.ntp.org 0.us.pool.ntp.org' >> $FILE"
-cat $FILE
-echo $password | sudo -S systemctl restart systemd-timesyncd.service
-
-# fix USB device mode
-DIR="/opt/nvidia/l4t-usb-device-mode/"
-echo $password | sudo -S cp $DIR/nv-l4t-usb-device-mode.sh $DIR/nv-l4t-usb-device-mode.sh.orig
-echo $password | sudo -S cp $DIR/nv-l4t-usb-device-mode-stop.sh $DIR/nv-l4t-usb-device-mode-stop.sh.orig
-cat $DIR/nv-l4t-usb-device-mode.sh | grep dhcpd_.*=
-cat $DIR/nv-l4t-usb-device-mode-stop.sh | grep dhcpd_.*=
-echo $password | sudo -S sed -i 's|${script_dir}/dhcpd.leases|/run/dhcpd.leases|g' $DIR/nv-l4t-usb-device-mode.sh
-echo $password | sudo -S sed -i 's|${script_dir}/dhcpd.pid|/run/dhcpd.pid|g' $DIR/nv-l4t-usb-device-mode.sh
-echo $password | sudo -S sed -i 's|${script_dir}/dhcpd.leases|/run/dhcpd.leases|g' $DIR/nv-l4t-usb-device-mode-stop.sh
-echo $password | sudo -S sed -i 's|${script_dir}/dhcpd.pid|/run/dhcpd.pid|g' $DIR/nv-l4t-usb-device-mode-stop.sh
-cat $DIR/nv-l4t-usb-device-mode.sh | grep dhcpd_.*=
-cat $DIR/nv-l4t-usb-device-mode-stop.sh | grep dhcpd_.*=
-
 # enable i2c permissions
 echo $password | sudo -S usermod -aG i2c $USER
 
@@ -58,11 +38,13 @@ echo $password | sudo -S python3 -m pip install git+https://github.com/ipython/t
 echo $password | sudo -S apt install -y nodejs npm
 echo $password | sudo -S pip3 install -U jupyter jupyterlab
 echo $password | sudo -S jupyter labextension install @jupyter-widgets/jupyterlab-manager
-echo $password | sudo -S jupyter labextension install @jupyterlab/statusbar
 jupyter lab --generate-config
 
 # set jupyter password
 python3 -c "from notebook.auth.security import set_password; set_password('$password', '$HOME/.jupyter/jupyter_notebook_config.json')"
+
+# fix for Traitlet permission error
+echo $password | sudo -S chown -R jetson:jetson ~/.local/share
 
 # install jetcard
 echo $password | sudo -S python3 setup.py install
@@ -99,8 +81,8 @@ cd slim
 echo $password | sudo -S python3 setup.py install
 
 # disable syslog to prevent large log files from collecting
-echo $password | sudo -S service rsyslog stop
-echo $password | sudo -S systemctl disable rsyslog
+#echo $password | sudo -S service rsyslog stop
+#echo $password | sudo -S systemctl disable rsyslog
 
 # install jupyter_clickable_image_widget
 echo $password | sudo -S npm install -g typescript
@@ -116,3 +98,6 @@ echo $password | sudo -S npm run build
 echo $password | sudo -S pip3 install .
 echo $password | sudo -S jupyter labextension install .
 echo $password | sudo -S jupyter labextension install @jupyter-widgets/jupyterlab-manager
+
+# install remaining dependencies for projects
+sudo apt-get install python-setuptools
