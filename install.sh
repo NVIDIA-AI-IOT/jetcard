@@ -36,7 +36,8 @@ echo $password | sudo -S python3 -m pip install git+https://github.com/ipython/t
 
 # install jupyter lab
 echo $password | sudo -S apt install -y nodejs npm
-echo $password | sudo -S pip3 install -U jupyter jupyterlab
+echo $password | sudo -S pip3 install -U jupyter 
+echo $password | sudo -S pip3 install jupyterlab==0.35.4
 echo $password | sudo -S jupyter labextension install @jupyter-widgets/jupyterlab-manager
 jupyter lab --generate-config
 
