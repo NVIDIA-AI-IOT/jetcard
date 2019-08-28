@@ -82,8 +82,8 @@ while True:
 
     # Write two lines of text.
 
-    draw.text((x, top),       "eth0:" + str(get_ip_address('eth0')),  font=font, fill=255)
-    draw.text((x, top+8),     "wlan0:" + str(get_ip_address('wlan0')), font=font, fill=255)
+    draw.text((x, top),       "eth0:" + str(ip_address('eth0')),  font=font, fill=255)
+    draw.text((x, top+8),     "wlan0:" + str(ip_address('wlan0')), font=font, fill=255)
     draw.text((x, top+16),    str(MemUsage.decode('utf-8')),  font=font, fill=255)
     draw.text((x, top+25),    str(Disk.decode('utf-8')) + (" %.1f")%value,  font=font, fill=255)
 
