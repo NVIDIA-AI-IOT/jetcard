@@ -6,11 +6,12 @@ import PIL.ImageFont
 import PIL.ImageDraw
 from flask import Flask
 from .utils import ip_address, power_mode, power_usage, cpu_usage, gpu_usage, memory_usage, disk_usage
-
+from jetcard import ads1115
 
 class DisplayServer(object):
     
     def __init__(self, *args, **kwargs):
+        self.ads = ads1115.ADS1115()
         self.display = Adafruit_SSD1306.SSD1306_128_32(rst=None, i2c_bus=1, gpio=1) 
         self.display.begin()
         self.display.clear()
@@ -26,6 +27,8 @@ class DisplayServer(object):
         
     def _run_display_stats(self):
         while self.stats_enabled:
+            value=self.ads.readVoltage(4)/1000.0
+            
             self.draw.rectangle((0, 0, self.image.width, self.image.height), outline=0, fill=0)
 
             # set IP address
@@ -39,7 +42,7 @@ class DisplayServer(object):
 
             top = 6
             power_mode_str = power_mode()
-            self.draw.text((4, top), 'MODE: ' + power_mode_str, font=self.font, fill=255)
+            self.draw.text((4, top), 'MODE: ' + power_mode_str + ("    %.1fV")%value, font=self.font, fill=255)
             
             # set stats headers
             top = 14
