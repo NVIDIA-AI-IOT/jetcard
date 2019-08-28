@@ -25,7 +25,7 @@ import Adafruit_SSD1306
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
-from .utils import get_ip_address
+from .utils import ip_address
 from jetcard import ads1115
 
 import subprocess
