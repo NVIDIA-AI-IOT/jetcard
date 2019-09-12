@@ -28,7 +28,7 @@ hexdump -C $3_last34_init.bin
 echo "### hexdump -C $3_last34_mod.bin"
 hexdump -C $3_last34_mod.bin
 
-rm $3_last34_*.bin
+rm -fv $3_last34_*.bin
 
 echo "zip $3.zip $3.img"
 zip $3.zip $3.img
