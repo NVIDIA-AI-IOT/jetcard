@@ -20,9 +20,13 @@ echo $password | sudo -S pip3 install -U numpy grpcio absl-py py-cpuinfo psutil 
 echo $password | sudo -S pip3 install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v42 tensorflow-gpu
 
 # install pytorch
-wget https://nvidia.box.com/shared/static/veo87trfaawj5pfwuqvhl6mzc5b55fbj.whl -O torch-1.1.0a0+b457266-cp36-cp36m-linux_aarch64.whl
-echo $password | sudo -S pip3 install -U numpy torch-1.1.0a0+b457266-cp36-cp36m-linux_aarch64.whl
-echo $password | sudo -S pip3 install -U torchvision
+wget https://nvidia.box.com/shared/static/06vlvedmqpqstu1dym49fo7aapgfyyu9.whl -O torch-1.2.0a0+8554416-cp36-cp36m-linux_aarch64.whl
+echo $password | sudo -S pip3 install -U numpy torch-1.2.0a0+8554416-cp36-cp36m-linux_aarch64.whl
+cd
+git clone https://github.com/pytorch/vision
+cd vision
+git checkout v0.4.0
+echo $password | sudopython3 setup.py installl
 
 # setup Jetson.GPIO
 echo $password | sudo -S groupadd -f -r gpio
