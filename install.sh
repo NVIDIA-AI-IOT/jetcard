@@ -26,7 +26,7 @@ cd
 git clone https://github.com/pytorch/vision
 cd vision
 git checkout v0.4.0
-echo $password | sudo python3 setup.py installl
+echo $password | sudo python3 setup.py install
 
 # setup Jetson.GPIO
 echo $password | sudo -S groupadd -f -r gpio
