@@ -7,11 +7,24 @@ import PIL.ImageDraw
 from flask import Flask
 from .utils import ip_address, power_mode, power_usage, cpu_usage, gpu_usage, memory_usage, disk_usage
 from jetcard import ads1115
+from jetcard import ina219
+import os
 
 class DisplayServer(object):
     
     def __init__(self, *args, **kwargs):
-        self.ads = ads1115.ADS1115()
+        adress = os.popen("i2cdetect -y -r 1 0x48 0x48 | egrep '48' | awk '{print $2}'").read()
+        if(adress=='48\n'):
+            self.ads = ads1115.ADS1115()
+        else:
+            self.ads = None
+            
+        adress = os.popen("i2cdetect -y -r 1 0x41 0x41 | egrep '41' | awk '{print $2}'").read()
+        if(adress=='41\n'):
+            self.ina219 = ina219.INA219(addr=0x41)
+        else:
+            self.ina219 = None
+            
         self.display = Adafruit_SSD1306.SSD1306_128_32(rst=None, i2c_bus=1, gpio=1) 
         self.display.begin()
         self.display.clear()
@@ -26,9 +39,9 @@ class DisplayServer(object):
         self.enable_stats()
         
     def _run_display_stats(self):
+        Charge = False
         while self.stats_enabled:
-            value=self.ads.readVoltage(4)/1000.0
-            
+
             self.draw.rectangle((0, 0, self.image.width, self.image.height), outline=0, fill=0)
 
             # set IP address
@@ -42,8 +55,29 @@ class DisplayServer(object):
 
             top = 6
             power_mode_str = power_mode()
-            self.draw.text((4, top), 'MODE: ' + power_mode_str + ("    %.1fV")%value, font=self.font, fill=255)
-            
+
+            if(self.ina219 != None):
+                bus_voltage = self.ina219.getBusVoltage_V()        # voltage on V- (load side)
+                current = self.ina219.getCurrent_mA()                # current in mA
+                p = bus_voltage/12.6*100
+                if(p > 100):p = 100
+                if(current > 30):
+                    Charge = not Charge
+                else:
+                    Charge = False
+
+                if(Charge == False):
+                    self.draw.text((600, -2), ' ', font=self.font, fill=255)
+                else:
+                    self.draw.text((120, -2), '*', font=self.font, fill=255)
+                self.draw.text((4, top), power_mode_str + (" %.1fV")%bus_voltage + (" %.2fA")%(current/1000) + (" %2.0f%%")%p, font=self.font, fill=255)
+            elif(self.ads != None):
+                value=self.ads.readVoltage(4)/1000.0
+                p = value/12.6*100
+                if(p > 100):p = 100
+                self.draw.text((4, top), 'MODE: ' + power_mode_str + ("  %.1fV")%value + ("  %2.0f%%")%p, font=self.font, fill=255)
+            else:
+                self.draw.text((4, top), 'MODE: ' + power_mode_str, font=self.font, fill=255)
             # set stats headers
             top = 14
             offset = 3 * 8
@@ -65,7 +99,7 @@ class DisplayServer(object):
 
             self.display.image(self.image)
             self.display.display()
-
+    
             time.sleep(self.stats_interval)
             
     def enable_stats(self):
