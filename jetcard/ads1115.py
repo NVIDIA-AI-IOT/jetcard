@@ -1,9 +1,6 @@
 import smbus
 import time
 
-# Get I2C bus
-bus = smbus.SMBus(1)
-
 # I2C address of the device
 ADS1115_IIC_ADDRESS                = 0x48
 
@@ -101,7 +98,7 @@ class ADS1115(object):
         """Read data back from ADS1115_REG_CONVERT(0x00), 2 bytes
         raw_adc MSB, raw_adc LSB"""
 
-        data = bus.read_i2c_block_data(self.addr, ADS1115_REG_CONVERT, 2)
+        data = self.bus.read_i2c_block_data(self.addr, ADS1115_REG_CONVERT, 2)
         
         # Convert the data
         raw_adc = data[0] * 256 + data[1]
@@ -115,7 +112,7 @@ class ADS1115(object):
 
         self.setChannel(channel)
         CONFIG_REG = [ADS1115_CONFIG_OS_SINGLE | (self.channel << 4) | ADS1115_CONFIG_PGA_4_096V | ADS1115_CONFIG_MODE_CONTIN, ADS1115_CONFIG_DR_128SPS | ADS1115_CONFIG_CQUE_NONE]
-        bus.write_i2c_block_data(self.addr, ADS1115_REG_CONFIG, CONFIG_REG)
+        self.bus.write_i2c_block_data(self.addr, ADS1115_REG_CONFIG, CONFIG_REG)
         time.sleep(0.1)
         return self.readValue()
         
