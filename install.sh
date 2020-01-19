@@ -56,12 +56,12 @@ sudo python3 -m pip install git+https://github.com/ipython/traitlets@master
 
 # Install Jupyter Lab
 echo "\e[48;5;172m Install Jupyter Lab \e[0m"
+sudo apt install -y nodejs npm
 sudo pip3 install jupyter jupyterlab
 sudo jupyter labextension install @jupyter-widgets/jupyterlab-manager
 
-#jupyter lab --generate-config
-##jupyter notebook password
-#python3 -c "from notebook.auth.security import set_password; set_password('$password', '$HOME/.jupyter/jupyter_notebook_config.json')"
+jupyter lab --generate-config
+python3 -c "from notebook.auth.security import set_password; set_password('$password', '$HOME/.jupyter/jupyter_notebook_config.json')"
 
 # fix for Traitlet permission error
 #echo $password | sudo -S chown -R jetson:jetson ~/.local/share
