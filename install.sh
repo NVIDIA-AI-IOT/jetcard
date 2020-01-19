@@ -2,7 +2,7 @@
 
 set -e
 
-password=$1
+password='jetson'
 
 # Keep updating the existing sudo time stamp
 sudo -v
@@ -31,15 +31,16 @@ sudo pip3 install --pre --extra-index-url https://developer.download.nvidia.com/
 
 # Install the pre-built PyTorch pip wheel 
 echo "\e[45m Install the pre-built PyTorch pip wheel  \e[0m"
+cd
 wget https://nvidia.box.com/shared/static/phqe92v26cbhqjohwtvxorrwnmrnfx1o.whl -O torch-1.3.0-cp36-cp36m-linux_aarch64.whl
 sudo pip3 install numpy torch-1.3.0-cp36-cp36m-linux_aarch64.whl
 
 # Install torchvision package
 echo "\e[45m Install torchvision package \e[0m"
-git clone https://github.com/pytorch/vision
-cd vision
-git checkout v0.4.0
-sudo python3 setup.py install
+#git clone https://github.com/pytorch/vision
+#cd vision
+#git checkout v0.4.0
+#sudo python3 setup.py install
 
 # setup Jetson.GPIO
 #echo "\e[100m Install torchvision package \e[0m"
@@ -53,21 +54,21 @@ sudo python3 setup.py install
 echo "\e[48;5;172m Install traitlets \e[0m"
 sudo python3 -m pip install git+https://github.com/ipython/traitlets@master
 
-# Install jupyter lab
-echo "\e[48;5;172m Install traitlets \e[0m"
-sudo apt install -y nodejs npm
+# Install Jupyter Lab
+echo "\e[48;5;172m Install Jupyter Lab \e[0m"
 sudo pip3 install jupyter jupyterlab
 sudo jupyter labextension install @jupyter-widgets/jupyterlab-manager
 
-jupyter lab --generate-config
-#jupyter notebook password
-python3 -c "from notebook.auth.security import set_password; set_password('$password', '$HOME/.jupyter/jupyter_notebook_config.json')"
+#jupyter lab --generate-config
+##jupyter notebook password
+#python3 -c "from notebook.auth.security import set_password; set_password('$password', '$HOME/.jupyter/jupyter_notebook_config.json')"
 
 # fix for Traitlet permission error
 #echo $password | sudo -S chown -R jetson:jetson ~/.local/share
 
 # Install jetcard
 echo "\e[44m Install jetcard \e[0m"
+pwd
 sudo python3 setup.py install
 
 # Install jetcard display service
@@ -85,25 +86,35 @@ sudo systemctl enable jetcard_jupyter
 sudo systemctl start jetcard_jupyter
 
 # Make swapfile
-echo "\e[46m Install jetcard jupyter service \e[0m"
-sudo fallocate -l 4G /var/swapfile
-sudo chmod 600 /var/swapfile
-sudo mkswap /var/swapfile
-sudo swapon /var/swapfile
-sudo bash -c 'echo "/var/swapfile swap swap defaults 0 0" >> /etc/fstab'
+echo "\e[46m Make swapfile \e[0m"
+cd
+if [ ! -f /var/swapfile ]; then
+	sudo fallocate -l 4G /var/swapfile
+	sudo chmod 600 /var/swapfile
+	sudo mkswap /var/swapfile
+	sudo swapon /var/swapfile
+	sudo bash -c 'echo "/var/swapfile swap swap defaults 0 0" >> /etc/fstab'
+else
+	echo "Swapfile already exists"
+fi
 
 # Install TensorFlow models repository
 echo "\e[48;5;202m Install TensorFlow models repository \e[0m"
-git clone https://github.com/tensorflow/models
-cd models/research
-git checkout 5f4d34fc
-wget -O protobuf.zip https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-aarch_64.zip
-# wget -O protobuf.zip https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-x86_64.zip
-unzip protobuf.zip
-./bin/protoc object_detection/protos/*.proto --python_out=.
-sudo python3 setup.py install
-cd slim
-sudo python3 setup.py install
+cd
+url="https://github.com/tensorflow/models"
+tf_models_dir="TF-models"
+if [ ! -d "$tf_models_dir" ] ; then
+	git clone $url $tf_models_dir
+	cd "$tf_models_dir"/research
+	git checkout 5f4d34fc
+	wget -O protobuf.zip https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-aarch_64.zip
+	# wget -O protobuf.zip https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-x86_64.zip
+	unzip protobuf.zip
+	./bin/protoc object_detection/protos/*.proto --python_out=.
+	sudo python3 setup.py install
+	cd slim
+	sudo python3 setup.py install
+fi
 
 # Disable syslog to prevent large log files from collecting
 #sudo service rsyslog stop
@@ -111,21 +122,20 @@ sudo python3 setup.py install
 
 # Install jupyter_clickable_image_widget
 echo "\e[42m Install jupyter_clickable_image_widget \e[0m"
-sudo npm install -g typescript
+cd
+sudo apt-get install nodejs-dev node-gyp libssl1.0-dev
+sudo apt-get install npm
 git clone https://github.com/jaybdub/jupyter_clickable_image_widget
 cd jupyter_clickable_image_widget
 git checkout no_typescript
+sudo pip3 install -e .
+sudo jupyter labextension install js
 
-# Allow next command to fail
-set +e
-sudo python3 setup.py build
-
-set -e
-sudo npm run build
-sudo pip3 install .
-sudo jupyter labextension install .
-sudo jupyter labextension install @jupyter-widgets/jupyterlab-manager
 
 # Install remaining dependencies for projects
 echo "\e[104m Install remaining dependencies for projects \e[0m"
 sudo apt-get install python-setuptools
+
+
+echo "\e[42m All done! \e[0m"
+
