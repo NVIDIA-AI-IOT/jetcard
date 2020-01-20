@@ -4,6 +4,9 @@ set -e
 
 password='jetson'
 
+# Get the full dir name of this script
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
 # Keep updating the existing sudo time stamp
 sudo -v
 while true; do sudo -n true; sleep 120; kill -0 "$$" || exit; done 2>/dev/null &
@@ -73,6 +76,7 @@ python3 -c "from notebook.auth.security import set_password; set_password('$pass
 
 # Install jetcard
 echo "\e[44m Install jetcard \e[0m"
+cd $DIR
 pwd
 sudo python3 setup.py install
 
