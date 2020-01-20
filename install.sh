@@ -4,6 +4,9 @@ set -e
 
 password='jetson'
 
+# Record the time this script starts
+date
+
 # Get the full dir name of this script
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
@@ -147,4 +150,7 @@ sudo apt-get install python-setuptools
 
 
 echo "\e[42m All done! \e[0m"
+
+#record the time this script ends
+date
 
