@@ -20,6 +20,11 @@ sudo pip3 install --upgrade pip
 sudo pip3 install flask
 sudo pip3 install --upgrade numpy
 
+# Install jtop
+echo "\e[100m Install jtop \e[0m"
+sudo -H pip install jetson-stats 
+
+
 # Install the pre-built TensorFlow pip wheel
 echo "\e[48;5;202m Install the pre-built TensorFlow pip wheel \e[0m"
 sudo apt-get update
