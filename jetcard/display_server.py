@@ -59,8 +59,10 @@ class DisplayServer(object):
             if(self.ina219 != None):
                 bus_voltage = self.ina219.getBusVoltage_V()        # voltage on V- (load side)
                 current = self.ina219.getCurrent_mA()                # current in mA
-                p = bus_voltage/12.6*100
+                p = (bus_voltage - 9)/3.6*100
                 if(p > 100):p = 100
+                if(p < 0):p = 0
+                if(current < 0):current = 0
                 if(current > 30):
                     Charge = not Charge
                 else:
@@ -73,8 +75,9 @@ class DisplayServer(object):
                 self.draw.text((4, top), power_mode_str + (" %.1fV")%bus_voltage + (" %.2fA")%(current/1000) + (" %2.0f%%")%p, font=self.font, fill=255)
             elif(self.ads != None):
                 value=self.ads.readVoltage(4)/1000.0
-                p = value/12.6*100
+                p = (value - 9)/3.6*100
                 if(p > 100):p = 100
+                if(p < 0):p = 0
                 self.draw.text((4, top), 'MODE: ' + power_mode_str + ("  %.1fV")%value + ("  %2.0f%%")%p, font=self.font, fill=255)
             else:
                 self.draw.text((4, top), 'MODE: ' + power_mode_str, font=self.font, fill=255)
