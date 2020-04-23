@@ -36,9 +36,9 @@ echo "\e[48;5;202m Install the pre-built TensorFlow pip wheel \e[0m"
 sudo apt-get update
 sudo apt-get install -y libhdf5-serial-dev hdf5-tools libhdf5-dev zlib1g-dev zip libjpeg8-dev
 sudo apt-get install -y python3-pip
-sudo pip3 install -U pip
-sudo pip3 install -U numpy==1.16.1 future==0.17.1 mock==3.0.5 h5py==2.9.0 keras_preprocessing==1.0.5 keras_applications==1.0.6 enum34 futures testresources setuptools protobuf
-sudo pip3 install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v42 tensorflow-gpu==1.14.0+nv19.10
+sudo pip3 install -U pip setuptools
+sudo pip3 install -U numpy grpcio absl-py py-cpuinfo psutil portpicker six mock requests gast h5py astor termcolor protobuf keras-applications keras-preprocessing wrapt google-pasta
+sudo pip3 install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v43 tensorflow==1.15.2+nv20.3
 
 # Install the pre-built PyTorch pip wheel 
 echo "\e[45m Install the pre-built PyTorch pip wheel  \e[0m"
@@ -48,10 +48,10 @@ sudo pip3 install numpy torch-1.3.0-cp36-cp36m-linux_aarch64.whl
 
 # Install torchvision package
 echo "\e[45m Install torchvision package \e[0m"
-#git clone https://github.com/pytorch/vision
-#cd vision
-#git checkout v0.4.0
-#sudo python3 setup.py install
+git clone https://github.com/pytorch/vision
+cd vision
+git checkout v0.4.0
+sudo python3 setup.py install
 
 # setup Jetson.GPIO
 #echo "\e[100m Install torchvision package \e[0m"
@@ -68,7 +68,7 @@ sudo python3 -m pip install git+https://github.com/ipython/traitlets@master
 # Install Jupyter Lab
 echo "\e[48;5;172m Install Jupyter Lab \e[0m"
 sudo apt install -y nodejs npm
-sudo pip3 install jupyter jupyterlab
+sudo pip3 install jupyter jupyterlab==1.2.4
 sudo jupyter labextension install @jupyter-widgets/jupyterlab-manager
 
 jupyter lab --generate-config
@@ -142,6 +142,7 @@ cd jupyter_clickable_image_widget
 git checkout no_typescript
 sudo pip3 install -e .
 sudo jupyter labextension install js
+sudo jupyter lab build
 
 
 # Install remaining dependencies for projects
