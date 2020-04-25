@@ -75,7 +75,7 @@ jupyter lab --generate-config
 python3 -c "from notebook.auth.security import set_password; set_password('$password', '$HOME/.jupyter/jupyter_notebook_config.json')"
 
 # fix for Traitlet permission error
-#echo $password | sudo -S chown -R jetson:jetson ~/.local/share
+sudo chown -R jetson:jetson ~/.local/share/
 
 # Install jetcard
 echo "\e[44m Install jetcard \e[0m"
