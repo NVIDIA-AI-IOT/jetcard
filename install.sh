@@ -14,32 +14,32 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 sudo -v
 while true; do sudo -n true; sleep 120; kill -0 "$$" || exit; done 2>/dev/null &
 
-## Enable i2c permissions
-#echo "\e[100m Enable i2c permissions \e[0m"
-#sudo usermod -aG i2c $USER
-#
-## Install pip and some python dependencies
-#echo "\e[104m Install pip and some python dependencies \e[0m"
-#sudo apt-get update
-#sudo apt install -y python3-pip python3-pil python3-smbus python3-matplotlib cmake
-#sudo pip3 install --upgrade pip
-#sudo pip3 install flask
-#sudo pip3 install --upgrade numpy
-#
-## Install jtop
-#echo "\e[100m Install jtop \e[0m"
-#sudo -H pip install jetson-stats 
-#
-#
-## Install the pre-built TensorFlow pip wheel
-#echo "\e[48;5;202m Install the pre-built TensorFlow pip wheel \e[0m"
-#sudo apt-get update
-#sudo apt-get install -y libhdf5-serial-dev hdf5-tools libhdf5-dev zlib1g-dev zip libjpeg8-dev
-#sudo apt-get install -y python3-pip
-#sudo pip3 install -U pip setuptools
-#sudo pip3 install -U numpy grpcio absl-py py-cpuinfo psutil portpicker six mock requests gast h5py astor termcolor protobuf keras-applications keras-preprocessing wrapt google-pasta
-#sudo pip3 install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v43 tensorflow==1.15.2+nv20.3
-#
+# Enable i2c permissions
+echo "\e[100m Enable i2c permissions \e[0m"
+sudo usermod -aG i2c $USER
+
+# Install pip and some python dependencies
+echo "\e[104m Install pip and some python dependencies \e[0m"
+sudo apt-get update
+sudo apt install -y python3-pip python3-pil python3-smbus python3-matplotlib cmake
+sudo pip3 install --upgrade pip
+sudo pip3 install flask
+sudo pip3 install --upgrade numpy
+
+# Install jtop
+echo "\e[100m Install jtop \e[0m"
+sudo -H pip install jetson-stats 
+
+
+# Install the pre-built TensorFlow pip wheel
+echo "\e[48;5;202m Install the pre-built TensorFlow pip wheel \e[0m"
+sudo apt-get update
+sudo apt-get install -y libhdf5-serial-dev hdf5-tools libhdf5-dev zlib1g-dev zip libjpeg8-dev
+sudo apt-get install -y python3-pip
+sudo pip3 install -U pip setuptools
+sudo pip3 install -U numpy grpcio absl-py py-cpuinfo psutil portpicker six mock requests gast h5py astor termcolor protobuf keras-applications keras-preprocessing wrapt google-pasta
+sudo pip3 install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v43 tensorflow==1.15.2+nv20.3
+
 # Install the pre-built PyTorch pip wheel 
 echo "\e[45m Install the pre-built PyTorch pip wheel  \e[0m"
 cd
