@@ -22,9 +22,9 @@ sudo usermod -aG i2c $USER
 echo "\e[104m Install pip and some python dependencies \e[0m"
 sudo apt-get update
 sudo apt install -y python3-pip python3-pil python3-smbus python3-matplotlib cmake
-sudo pip3 install --upgrade pip
-sudo pip3 install flask
-sudo pip3 install --upgrade numpy
+sudo -H pip3 install --upgrade pip
+sudo -H pip3 install flask
+sudo -H pip3 install --upgrade numpy
 
 # Install jtop
 echo "\e[100m Install jtop \e[0m"
@@ -36,9 +36,9 @@ echo "\e[48;5;202m Install the pre-built TensorFlow pip wheel \e[0m"
 sudo apt-get update
 sudo apt-get install -y libhdf5-serial-dev hdf5-tools libhdf5-dev zlib1g-dev zip libjpeg8-dev
 sudo apt-get install -y python3-pip
-sudo pip3 install -U pip setuptools
-sudo pip3 install -U numpy grpcio absl-py py-cpuinfo psutil portpicker six mock requests gast h5py astor termcolor protobuf keras-applications keras-preprocessing wrapt google-pasta
-sudo pip3 install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v43 tensorflow==1.15.2+nv20.3
+sudo -H pip3 install -U pip setuptools
+sudo -H pip3 install -U numpy grpcio absl-py py-cpuinfo psutil portpicker six mock requests gast h5py astor termcolor protobuf keras-applications keras-preprocessing wrapt google-pasta
+sudo -H pip3 install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v43 tensorflow==1.15.2+nv20.3
 
 # Install the pre-built PyTorch pip wheel 
 echo "\e[45m Install the pre-built PyTorch pip wheel  \e[0m"
@@ -72,7 +72,7 @@ sudo -H python3 -m pip install git+https://github.com/ipython/traitlets@master
 echo "\e[48;5;172m Install Jupyter Lab \e[0m"
 sudo apt install -y curl
 curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
-sudo apt install -y nodejs npm
+sudo apt install -y nodejs 
 sudo -H pip3 install jupyter jupyterlab
 sudo -H jupyter labextension install @jupyter-widgets/jupyterlab-manager
 
@@ -140,8 +140,9 @@ fi
 # Install jupyter_clickable_image_widget
 echo "\e[42m Install jupyter_clickable_image_widget \e[0m"
 cd
-sudo apt-get install nodejs-dev node-gyp libssl1.0-dev
-sudo apt-get install npm
+sudo apt-get install libssl1.0-dev
+#sudo apt-get install nodejs-dev node-gyp libssl1.0-dev
+#sudo apt-get install npm
 git clone https://github.com/jaybdub/jupyter_clickable_image_widget
 cd jupyter_clickable_image_widget
 git checkout no_typescript
