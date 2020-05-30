@@ -25,6 +25,12 @@ class DisplayServer(object):
         else:
             self.ina219 = None
             
+        adress = os.popen("i2cdetect -y -r 1 0x42 0x42 | egrep '42' | awk '{print $2}'").read()
+        if(adress=='42\n'):
+            self.ina = ina219.INA219(addr=0x42)
+        else:
+            self.ina = None
+            
         self.display = Adafruit_SSD1306.SSD1306_128_32(rst=None, i2c_bus=1, gpio=1) 
         self.display.begin()
         self.display.clear()
@@ -55,8 +61,24 @@ class DisplayServer(object):
 
             top = 6
             power_mode_str = power_mode()
+            if(self.ina != None):
+                bus_voltage = self.ina.getBusVoltage_V()        # voltage on V- (load side)
+                current = self.ina.getCurrent_mA()                # current in mA
+                p = (bus_voltage - 6)/2.4*100
+                if(p > 100):p = 100
+                if(p < 0):p = 0
+                if(current < 0):current = 0
+                if(current > 30):
+                    Charge = not Charge
+                else:
+                    Charge = False
 
-            if(self.ina219 != None):
+                if(Charge == False):
+                    self.draw.text((600, -2), ' ', font=self.font, fill=255)
+                else:
+                    self.draw.text((120, -2), '*', font=self.font, fill=255)
+                self.draw.text((4, top), power_mode_str + (" %.1fV")%bus_voltage + (" %.2fA")%(current/1000) + (" %2.0f%%")%p, font=self.font, fill=255)
+            elif(self.ina219 != None):
                 bus_voltage = self.ina219.getBusVoltage_V()        # voltage on V- (load side)
                 current = self.ina219.getCurrent_mA()                # current in mA
                 p = (bus_voltage - 9)/3.6*100
