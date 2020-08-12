@@ -43,18 +43,20 @@ sudo -H pip3 install --pre --extra-index-url https://developer.download.nvidia.c
 # Install the pre-built PyTorch pip wheel 
 echo "\e[45m Install the pre-built PyTorch pip wheel  \e[0m"
 cd
-wget -N https://nvidia.box.com/shared/static/3ibazbiwtkl181n95n9em3wtrca7tdzp.whl -O torch-1.5.0-cp36-cp36m-linux_aarch64.whl
+wget -N https://nvidia.box.com/shared/static/9eptse6jyly1ggt9axbja2yrmj6pbarc.whl -O torch-1.6.0-cp36-cp36m-linux_aarch64.whl 
 sudo apt-get install -y python3-pip libopenblas-base libopenmpi-dev 
 sudo -H pip3 install Cython
-sudo -H pip3 install numpy torch-1.5.0-cp36-cp36m-linux_aarch64.whl
+sudo -H pip3 install numpy torch-1.6.0-cp36-cp36m-linux_aarch64.whl
 
 # Install torchvision package
 echo "\e[45m Install torchvision package \e[0m"
 cd
-git clone https://github.com/pytorch/vision
-cd vision
-#git checkout v0.4.0
+git clone https://github.com/pytorch/vision torchvision
+cd torchvision
+git checkout tags/v0.7.0
 sudo -H python3 setup.py install
+cd  ../
+pip install 'pillow<7'
 
 # setup Jetson.GPIO
 #echo "\e[100m Install torchvision package \e[0m"
