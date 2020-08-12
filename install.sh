@@ -68,13 +68,14 @@ pip install 'pillow<7'
 
 # Install traitlets (master, to support the unlink() method)
 echo "\e[48;5;172m Install traitlets \e[0m"
-sudo -H python3 -m pip install git+https://github.com/ipython/traitlets@master
+#sudo -H python3 -m pip install git+https://github.com/ipython/traitlets@master
+sudo -H pip3 install traitlets
 
 # Install Jupyter Lab
 echo "\e[48;5;172m Install Jupyter Lab \e[0m"
 sudo apt install -y curl
 curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
-sudo apt install -y nodejs 
+sudo apt install -y nodejs libffi-dev
 sudo -H pip3 install jupyter jupyterlab
 sudo -H jupyter labextension install @jupyter-widgets/jupyterlab-manager
 
