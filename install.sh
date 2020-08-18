@@ -69,7 +69,7 @@ pip install 'pillow<7'
 # Install traitlets (master, to support the unlink() method)
 echo "\e[48;5;172m Install traitlets \e[0m"
 #sudo -H python3 -m pip install git+https://github.com/ipython/traitlets@master
-sudo -H pip3 install traitlets
+RUN python3 -m pip install git+https://github.com/ipython/traitlets@dead2b8cdde5913572254cf6dc70b5a6065b86f8
 
 # Install Jupyter Lab
 echo "\e[48;5;172m Install Jupyter Lab \e[0m"
