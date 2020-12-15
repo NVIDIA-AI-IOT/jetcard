@@ -78,20 +78,20 @@ fi
 
 # install basic dependencies and jetcard
 echo "Installing jetcard..."
-python3 "import jetcard" || {
-	apt-get update
-	apt install -y \
-		python3-pip \
-		python3-pil \
-		python3-smbus \
-		python3-matplotlib \
-		cmake
-	pip3 install -U pip
-	pip3 install flask
-	pip3 install -U --upgrade numpy
-	python3 -m pip install traitlets
-	python3 setup.py install
-}
+
+apt-get update
+apt install -y \
+	python3-pip \
+	python3-pil \
+	python3-smbus \
+	python3-matplotlib \
+	cmake
+pip3 install -U pip
+pip3 install flask
+pip3 install -U --upgrade numpy
+python3 -m pip install traitlets
+python3 setup.py install
+
 
 # enable i2c permissions
 if [[ $enable_i2c =~ ^[Yy]$ ]];
