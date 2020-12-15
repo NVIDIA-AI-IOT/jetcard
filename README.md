@@ -47,6 +47,11 @@ if you're new to Jetson.
     ```bash
     git clone https://github.com/NVIDIA-AI-IOT/jetcard
     ```
+4. Navigate into the JetCard directory.  The installation script must be called from this directory.
+
+    ```bash
+    cd jetcard
+    ```
 4. Run the interactive installation script, and select the option depending on your needs.  By default, it will install all packages. This enables AI projects like JetBot.
 
     ```bash
