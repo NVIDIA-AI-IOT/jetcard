@@ -78,7 +78,7 @@ fi
 
 # install basic dependencies and jetcard
 echo "Installing jetcard..."
-python3 -c "import jetcard" || {
+python3 "import jetcard" || {
 	apt-get update
 	apt install -y \
 		python3-pip \
@@ -92,7 +92,6 @@ python3 -c "import jetcard" || {
 	python3 -m pip install traitlets
 	python3 setup.py install
 }
-
 
 # enable i2c permissions
 if [[ $enable_i2c =~ ^[Yy]$ ]];
