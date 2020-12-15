@@ -85,7 +85,8 @@ apt install -y \
 	python3-pil \
 	python3-smbus \
 	python3-matplotlib \
-	cmake
+	cmake \
+	curl
 pip3 install -U pip
 pip3 install flask
 pip3 install -U --upgrade numpy
