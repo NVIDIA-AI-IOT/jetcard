@@ -40,7 +40,7 @@ fi
 param install_jupyter "Install Jupyter Lab?" y
 if [[ $install_jupyter =~ ^[Yy]$ ]];
 then
-	param jupyter_password "Enter notebook password" jetbot
+	param jupyter_password "Enter notebook password" jetson
 	param install_jupyter_service "Install Jupyter Lab service?" y 
 fi
 
@@ -54,6 +54,23 @@ fi
 
 param disable_syslog "Disable system logging to prevent log accumulation?" y
 
+param install_jetbot "Install JetBot Python library and notebooks?" y
+if [[ $install_jetbot =~ ^[Yy]$ ]];
+then
+	param jetbot_dir "Enter directory to install JetBot" $HOME/Projects/jetbot
+fi
+
+param install_jetracer "Install JetRacer Python library and notebooks?" y
+if [[ $install_jetracer =~ ^[Yy]$ ]];
+then
+	param jetracer_dir "Enter directory to install JetRacer" $HOME/Projects/jetracer
+fi
+
+param install_jetcam "Install JetCam Python library and notebooks?" y
+if [[ $install_jetcam =~ ^[Yy]$ ]];
+then
+	param jetcam_dir "Enter directory to install JetCam" $HOME/Projects/jetcam
+fi
 
 #================================================================================
 # INSTALLATION PROCEDURE
@@ -207,3 +224,35 @@ then
 	systemctl start jetcard_jupyter
 fi
 
+# install jetbot
+if [[ $install_jetbot =~ ^[Yy]$ ]]
+then
+	echo "Installing JetBot"
+	mkdir -p "$(dirname $jetbot_dir)"
+	git clone https://github.com/NVIDIA-AI-IOT/jetbot $jetbot_dir
+	pushd $jetbot_dir
+	sudo python3 setup.py install
+	popd
+fi
+
+# install jetracer
+if [[ $install_jetracer =~ ^[Yy]$ ]]
+then
+	echo "Installing JetRacer"
+	mkdir -p "$(dirname $jetracer_dir)"
+	git clone https://github.com/NVIDIA-AI-IOT/jetracer $jetracer_dir
+	pushd $jetracer_dir
+	sudo python3 setup.py install
+	popd
+fi
+
+# install jetcam
+if [[ $install_jetcam =~ ^[Yy]$ ]]
+then
+	echo "Installing JetCam"
+	mkdir -p "$(dirname $jetcam_dir)"
+	git clone https://github.com/NVIDIA-AI-IOT/jetcam $jetcam_dir
+	pushd $jetcam_dir
+	sudo python3 setup.py install
+	popd
+fi
