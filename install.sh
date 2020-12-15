@@ -29,6 +29,10 @@ if [[ $install_torch =~ ^[Yy]$ ]];
 then
 	param install_torchvision "Install Torchvision?" y
 	param install_torch2trt "Install torch2trt?" y
+	if [[ $install_torch2trt =~ ^[Yy]$ ]];
+	then
+		param torch2trt_dir "Enter directory to install torch2trt" $HOME/Projects/torch2trt
+	fi
 fi
 
 param install_tensorflow "Install TensorFlow?" y
@@ -75,6 +79,9 @@ fi
 #================================================================================
 # INSTALLATION PROCEDURE
 #================================================================================
+
+TEMP_DIR=$(mktemp -d) # pushd/popd into this directory to download temporary files
+echo "Using $TEMP_DIR to store temporary installation files"
 
 # install basic dependencies and jetcard
 echo "Installing jetcard..."
@@ -125,19 +132,24 @@ then
 			libavcodec-dev \
 			libavformat-dev \
 			libswscale-dev
+		pushd $TEMP_DIR
 		git clone --branch v0.8.1 https://github.com/pytorch/vision torchvision
 		cd torchvision
 		export BUILD_VERSION=0.8.1
 		python3 setup.py install
-		cd ../
+		popd
 	fi
 	if [[ $install_torch2trt =~ ^[Yy]$ ]];
 	then
 		echo "Installing torch2trt..."
-		git clone https://github.com/NVIDIA-AI-IOT/torch2trt
-		cd torch2trt
+		if [[ ! -d $torch2trt_dir ]];
+		then
+			echo "Cloning torch2trt..."
+			git clone https://github.com/NVIDIA-AI-IOT/torch2trt $torch2trt_dir
+		fi
+		pushd $torch2trt_dir
 		python3 setup.py install
-		cd ..
+		popd
 	fi
 fi
 
@@ -176,16 +188,16 @@ then
 	# set jupyter password
 	python3 -c "from notebook.auth.security import set_password; set_password('$jupyter_password', '$HOME/.jupyter/jupyter_notebook_config.json')"
 	# install jupyter clickable image widget
-	python3 -c "import jupyter_clickable_image_widget" || {
 
-		echo "Installing jupyter clickable image widget"
-		git clone https://github.com/jaybdub/jupyter_clickable_image_widget
-		cd jupyter_clickable_image_widget
-		pip3 install -e .
-		jupyter labextension install js
-		cd ..
+	echo "Installing jupyter clickable image widget"
+	pushd $TEMP_DIR
+	git clone https://github.com/jaybdub/jupyter_clickable_image_widget
+	cd jupyter_clickable_image_widget
+	pip3 install -e .
+	jupyter labextension install js
+	cd ..
+	popd
 
-	}
 fi
 
 # enable 4GB SWAP
@@ -228,9 +240,12 @@ fi
 # install jetbot
 if [[ $install_jetbot =~ ^[Yy]$ ]]
 then
-	echo "Installing JetBot"
 	mkdir -p "$(dirname $jetbot_dir)"
-	git clone https://github.com/NVIDIA-AI-IOT/jetbot $jetbot_dir
+	if [[ ! -d $jetbot_dir ]]
+	then
+		echo "Cloning JetBot"
+		git clone https://github.com/NVIDIA-AI-IOT/jetbot $jetbot_dir
+	fi
 	pushd $jetbot_dir
 	sudo python3 setup.py install
 	popd
@@ -241,7 +256,11 @@ if [[ $install_jetracer =~ ^[Yy]$ ]]
 then
 	echo "Installing JetRacer"
 	mkdir -p "$(dirname $jetracer_dir)"
-	git clone https://github.com/NVIDIA-AI-IOT/jetracer $jetracer_dir
+	if [[ ! -d $jetracer_dir ]];
+	then
+		echo "Cloning JetRacer"
+		git clone https://github.com/NVIDIA-AI-IOT/jetracer $jetracer_dir
+	fi
 	pushd $jetracer_dir
 	sudo python3 setup.py install
 	popd
@@ -250,9 +269,12 @@ fi
 # install jetcam
 if [[ $install_jetcam =~ ^[Yy]$ ]]
 then
-	echo "Installing JetCam"
 	mkdir -p "$(dirname $jetcam_dir)"
-	git clone https://github.com/NVIDIA-AI-IOT/jetcam $jetcam_dir
+	if [[ ! -d $jetcam_dir ]];
+	then
+		echo "Cloning JetCam"
+		git clone https://github.com/NVIDIA-AI-IOT/jetcam $jetcam_dir
+	fi
 	pushd $jetcam_dir
 	sudo python3 setup.py install
 	popd
