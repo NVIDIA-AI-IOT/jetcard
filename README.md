@@ -26,7 +26,7 @@ if you're new to Jetson.
     |------------------|------------------|-----------------------------|
     | 4.4.1            | Jetson Nano 2GB  | [jetcard_441_nano2gb.sh](#) |
     | 4.4.1            | Jetson Nano 4GB  | [jetcard_441_nano4gb.sh](#) |
-    | 4.4.1            | Jetson Xavier NX | [jetcard_441_nx.sh.sh](#)   |
+    | 4.4.1            | Jetson Xavier NX | [jetcard_441_nx.sh](#)   |
 
     > The old JetCard image may be downloaded here [jetcard_v0p0p0.img](https://drive.google.com/open?id=1wXD1CwtxiH5Mz4uSmIZ76fd78zDQltW_)
 
