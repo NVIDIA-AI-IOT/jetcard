@@ -15,36 +15,45 @@ If you find an issue, please [let us know](../..//issues)!
 
 Follow the steps below to download JetCard directly or create it from scratch.
 
-### Option 1 - Download JetCard directly
+### Option 1 - Use pre-built SD card image
 
-1. Download the JetCard image [jetcard_v0p0p0.img](https://drive.google.com/open?id=1wXD1CwtxiH5Mz4uSmIZ76fd78zDQltW_) onto a Windows, Linux or Mac *desktop machine*
-    
-    > You can check it against this [md5sum](https://drive.google.com/open?id=1356ZBrYUWaTgbV50UMB1uCfWrNcd6PEF)
+This method uses a pre-built SD card image with the JetCard software dependencies and configuration already done.  This is likely the easiest option
+if you're new to Jetson.
 
-2. Insert a 32GB+ SD card into the desktop machine
-3. Using [Etcher](https://www.balena.io/etcher/) select ``jetcard_v0p0p0.img`` and flash it onto the SD card
-4. Remove the SD card from the desktop machine
+1. Download the JetCard image for your platform
 
-You may now insert the SD card into the Jetson Nano, power on, and enjoy the pre-configured system!
+    | JetPack Version  | Jetson Platform  | Download                    |
+    |------------------|------------------|-----------------------------|
+    | 4.4.1            | Jetson Nano 2GB  | [jetcard_441_nano2gb.sh](#) |
+    | 4.4.1            | Jetson Nano 4GB  | [jetcard_441_nano4gb.sh](#) |
+    | 4.4.1            | Jetson Xavier NX | [jetcard_441_nx.sh.sh](#)   |
+
+    > The old JetCard image may be downloaded here [jetcard_v0p0p0.img](https://drive.google.com/open?id=1wXD1CwtxiH5Mz4uSmIZ76fd78zDQltW_)
+
+2. Insert a 32GB+ SD card into your desktop computer
+3. Using [Etcher](https://www.balena.io/etcher/) select the SD card you downloaded, and flash it onto the SD card
+4. Remove the SD card from your desktop machine
+5. Insert the SD card into the Jetson Nano, power on, and enjoy the pre-configured system!
 
 > Please note, the password for the pre-built SD card is ``jetson``
 
-### Option 2 - Create JetCard from scratch
+### Option 2 - Use installation script
 
-1. Flash Jetson Nano following the [Getting Started Guide](https://developer.nvidia.com/embedded/learn/get-started-jetson-nano-devkit)
+1. Setup your Jetson device using the official [Getting Started Guide](https://developer.nvidia.com/embedded/learn/getting-started-jetson) for your platform.
 
-    > For Jetson TX2 / Xavier, use the [JetPack](https://developer.nvidia.com/embedded/jetpack) SDK manager
-
-2. On the Jetson, run the JetCard installation script
+2. On your Jetson, open a new terminal ``CTRL+ALT+T``
+3. Clone the JetCard git repository
 
     ```bash
     git clone https://github.com/NVIDIA-AI-IOT/jetcard
-    cd jetcard
-    ./install.sh <password>
     ```
-    
-Once the ``install.sh`` script finishes, your system should be configured identically to the SD card image mentioned above.
+4. Run the interactive installation script, and select the option depending on your needs.  By default, it will install all packages. This enables AI projects like JetBot.
 
+    ```bash
+    sudo ./install.sh
+    ```
+5. Once the installation is finish, enjoy your configured system!  
+   
 ## Usage
 
 ### Connecting
