@@ -39,6 +39,9 @@ if you're new to Jetson.
 
 ### Option 2 - Use installation script
 
+This method installs the JetCard software and configuration on an existing SD card image.  This may be the best option if you're already using Jetson,
+or want to customize the installation.
+
 1. Setup your Jetson device using the official [Getting Started Guide](https://developer.nvidia.com/embedded/learn/getting-started-jetson) for your platform.
 
 2. On your Jetson, open a new terminal ``CTRL+ALT+T``
