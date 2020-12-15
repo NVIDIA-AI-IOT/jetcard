@@ -1,118 +1,281 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
-password=$1
 
-# fix NTP server
-FILE="/etc/systemd/timesyncd.conf"
-echo $password | sudo -S bash -c "echo 'NTP=0.arch.pool.ntp.org 1.arch.pool.ntp.org 2.arch.pool.ntp.org 3.arch.pool.ntp.org' >> $FILE"
-echo $password | sudo -S bash -c "echo 'FallbackNTP=0.pool.ntp.org 1.pool.ntp.org 0.us.pool.ntp.org' >> $FILE"
-cat $FILE
-echo $password | sudo -S systemctl restart systemd-timesyncd.service
+param() {
+	local name=$1
+	local prompt=$2
+	local default=$3
 
-# fix USB device mode
-DIR="/opt/nvidia/l4t-usb-device-mode/"
-echo $password | sudo -S cp $DIR/nv-l4t-usb-device-mode.sh $DIR/nv-l4t-usb-device-mode.sh.orig
-echo $password | sudo -S cp $DIR/nv-l4t-usb-device-mode-stop.sh $DIR/nv-l4t-usb-device-mode-stop.sh.orig
-cat $DIR/nv-l4t-usb-device-mode.sh | grep dhcpd_.*=
-cat $DIR/nv-l4t-usb-device-mode-stop.sh | grep dhcpd_.*=
-echo $password | sudo -S sed -i 's|${script_dir}/dhcpd.leases|/run/dhcpd.leases|g' $DIR/nv-l4t-usb-device-mode.sh
-echo $password | sudo -S sed -i 's|${script_dir}/dhcpd.pid|/run/dhcpd.pid|g' $DIR/nv-l4t-usb-device-mode.sh
-echo $password | sudo -S sed -i 's|${script_dir}/dhcpd.leases|/run/dhcpd.leases|g' $DIR/nv-l4t-usb-device-mode-stop.sh
-echo $password | sudo -S sed -i 's|${script_dir}/dhcpd.pid|/run/dhcpd.pid|g' $DIR/nv-l4t-usb-device-mode-stop.sh
-cat $DIR/nv-l4t-usb-device-mode.sh | grep dhcpd_.*=
-cat $DIR/nv-l4t-usb-device-mode-stop.sh | grep dhcpd_.*=
+	read -p "$prompt ($default):"
+	if [[ $REPLY ]];
+	then
+		eval "$name=$REPLY"
+	else
+		eval "$name=$3"
+	fi
+}
+
+
+#================================================================================
+# PARAMETER DEFINITIONS
+#================================================================================
+
+param enable_i2c "Enable i2c permissions?" y
+
+param install_torch "Install PyTorch?" y
+if [[ $install_torch =~ ^[Yy]$ ]];
+then
+	param install_torchvision "Install Torchvision?" y
+	param install_torch2trt "Install torch2trt?" y
+	if [[ $install_torch2trt =~ ^[Yy]$ ]];
+	then
+		param torch2trt_dir "Enter directory to install torch2trt" $HOME/Projects/torch2trt
+	fi
+fi
+
+param install_tensorflow "Install TensorFlow?" y
+if [[ $install_tensorflow =~ ^[Yy]$ ]];
+then
+	param tensorflow_version "Enter TensorFlow major version [1/2]" 2
+fi
+
+param install_jupyter "Install Jupyter Lab?" y
+if [[ $install_jupyter =~ ^[Yy]$ ]];
+then
+	param jupyter_password "Enter notebook password" jetson
+	param install_jupyter_service "Install Jupyter Lab service?" y 
+fi
+
+param install_display_service "Install PiOLED stats display service?" y
+
+param install_swap "Install swap memory?" y
+if [[ $install_swap =~ ^[Yy]$ ]];
+then
+	param swap_size "Enter swap memory size" 4G
+fi
+
+param disable_syslog "Disable system logging to prevent log accumulation?" y
+
+param install_jetbot "Install JetBot Python library and notebooks?" y
+if [[ $install_jetbot =~ ^[Yy]$ ]];
+then
+	param jetbot_dir "Enter directory to install JetBot" $HOME/Projects/jetbot
+fi
+
+param install_jetracer "Install JetRacer Python library and notebooks?" y
+if [[ $install_jetracer =~ ^[Yy]$ ]];
+then
+	param jetracer_dir "Enter directory to install JetRacer" $HOME/Projects/jetracer
+fi
+
+param install_jetcam "Install JetCam Python library and notebooks?" y
+if [[ $install_jetcam =~ ^[Yy]$ ]];
+then
+	param jetcam_dir "Enter directory to install JetCam" $HOME/Projects/jetcam
+fi
+
+#================================================================================
+# INSTALLATION PROCEDURE
+#================================================================================
+
+TEMP_DIR=$(mktemp -d) # pushd/popd into this directory to download temporary files
+echo "Using $TEMP_DIR to store temporary installation files"
+
+# install basic dependencies and jetcard
+echo "Installing jetcard..."
+
+apt-get update
+apt install -y \
+	python3-pip \
+	python3-pil \
+	python3-smbus \
+	python3-matplotlib \
+	cmake \
+	curl
+pip3 install -U pip
+pip3 install flask
+pip3 install -U --upgrade numpy
+python3 -m pip install traitlets
+python3 setup.py install
+
 
 # enable i2c permissions
-echo $password | sudo -S usermod -aG i2c $USER
+if [[ $enable_i2c =~ ^[Yy]$ ]];
+then
+	usermod -aG i2c $USER
+fi
 
-# install pip and some apt dependencies
-echo $password | sudo -S apt-get update
-echo $password | sudo -S apt install -y python3-pip python3-pil python3-smbus python3-matplotlib cmake
-echo $password | sudo -S pip3 install -U pip
-echo $password | sudo -S pip3 install flask
-echo $password | sudo -S pip3 install -U --upgrade numpy
 
-# install tensorflow
-echo $password | sudo -S apt-get install -y libhdf5-serial-dev hdf5-tools libhdf5-dev zlib1g-dev zip libjpeg8-dev
-echo $password | sudo -S pip3 install -U numpy grpcio absl-py py-cpuinfo psutil portpicker six mock requests gast h5py astor termcolor protobuf keras-applications keras-preprocessing wrapt google-pasta
-echo $password | sudo -S pip3 install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v42 tensorflow-gpu
+# install pytorch 1.7
+if [[ $install_torch =~ ^[Yy]$ ]];
+then
+	echo "Installing torch..."
+	wget https://nvidia.box.com/shared/static/wa34qwrwtk9njtyarwt5nvo6imenfy26.whl \
+		-O torch-1.7.0-cp36-cp36m-linux_aarch64.whl
+	apt-get install -y \
+		python3-pip \
+		libopenblas-base \
+		libopenmpi-dev 
+	pip3 install \
+		Cython \
+		numpy \
+		torch-1.7.0-cp36-cp36m-linux_aarch64.whl
+	if [[ $install_torchvision =~ ^[Yy]$ ]];
+	then
+		echo "Installing torchvision..."
+		apt-get install -y \
+			libjpeg-dev \
+			zlib1g-dev \
+			libpython3-dev \
+			libavcodec-dev \
+			libavformat-dev \
+			libswscale-dev
+		pushd $TEMP_DIR
+		git clone --branch v0.8.1 https://github.com/pytorch/vision torchvision
+		cd torchvision
+		export BUILD_VERSION=0.8.1
+		python3 setup.py install
+		popd
+	fi
+	if [[ $install_torch2trt =~ ^[Yy]$ ]];
+	then
+		echo "Installing torch2trt..."
+		if [[ ! -d $torch2trt_dir ]];
+		then
+			echo "Cloning torch2trt..."
+			git clone https://github.com/NVIDIA-AI-IOT/torch2trt $torch2trt_dir
+		fi
+		pushd $torch2trt_dir
+		python3 setup.py install
+		popd
+	fi
+fi
 
-# install pytorch
-wget https://nvidia.box.com/shared/static/veo87trfaawj5pfwuqvhl6mzc5b55fbj.whl -O torch-1.1.0a0+b457266-cp36-cp36m-linux_aarch64.whl
-echo $password | sudo -S pip3 install -U numpy torch-1.1.0a0+b457266-cp36-cp36m-linux_aarch64.whl
-echo $password | sudo -S pip3 install -U torchvision
+# tensorflow
+if [[ $install_tensorflow =~ ^[Yy]$ ]];
+then
+	apt-get install libhdf5-serial-dev hdf5-tools libhdf5-dev zlib1g-dev zip libjpeg8-dev liblapack-dev libblas-dev gfortran
+	pip3 install -U testresources setuptools
+	pip3 install -U future mock h5py keras_preprocessing keras_applications gast futures protobuf pybind11
+	if [[ $tensorflow_version == 2 ]];
+	then
+		pip3 install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v44 tensorflow
+	else
+		pip3 install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v44 ‘tensorflow<2’
+	fi
+fi
 
-# setup Jetson.GPIO
-echo $password | sudo -S groupadd -f -r gpio
-echo $password | sudo -S usermod -a -G gpio $USER
-echo $password | sudo -S cp /opt/nvidia/jetson-gpio/etc/99-gpio.rules /etc/udev/rules.d/
-echo $password | sudo -S udevadm control --reload-rules
-echo $password | sudo -S udevadm trigger
-
-# install traitlets (master)
-echo $password | sudo -S python3 -m pip install git+https://github.com/ipython/traitlets@master
-
-# install jupyter lab
-echo $password | sudo -S apt install -y nodejs npm
-echo $password | sudo -S pip3 install -U jupyter jupyterlab
-echo $password | sudo -S jupyter labextension install @jupyter-widgets/jupyterlab-manager
-echo $password | sudo -S jupyter labextension install @jupyterlab/statusbar
-jupyter lab --generate-config
-
-# set jupyter password
-python3 -c "from notebook.auth.security import set_password; set_password('$password', '$HOME/.jupyter/jupyter_notebook_config.json')"
-
-# install jetcard
-echo $password | sudo -S python3 setup.py install
-
-# install jetcard display service
-python3 -m jetcard.create_display_service
-echo $password | sudo -S mv jetcard_display.service /etc/systemd/system/jetcard_display.service
-echo $password | sudo -S systemctl enable jetcard_display
-echo $password | sudo -S systemctl start jetcard_display
-
-# install jetcard jupyter service
-python3 -m jetcard.create_jupyter_service
-echo $password | sudo -S mv jetcard_jupyter.service /etc/systemd/system/jetcard_jupyter.service
-echo $password | sudo -S systemctl enable jetcard_jupyter
-echo $password | sudo -S systemctl start jetcard_jupyter
-
-# make swapfile
-echo $password | sudo -S fallocate -l 4G /var/swapfile
-echo $password | sudo -S chmod 600 /var/swapfile
-echo $password | sudo -S mkswap /var/swapfile
-echo $password | sudo -S swapon /var/swapfile
-echo $password | sudo -S bash -c 'echo "/var/swapfile swap swap defaults 0 0" >> /etc/fstab'
-
-# install TensorFlow models repository
-git clone https://github.com/tensorflow/models
-cd models/research
-git checkout 5f4d34fc
-wget -O protobuf.zip https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-aarch_64.zip
-# wget -O protobuf.zip https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-x86_64.zip
-unzip protobuf.zip
-./bin/protoc object_detection/protos/*.proto --python_out=.
-echo $password | sudo -S python3 setup.py install
-cd slim
-echo $password | sudo -S python3 setup.py install
 
 # disable syslog to prevent large log files from collecting
-echo $password | sudo -S service rsyslog stop
-echo $password | sudo -S systemctl disable rsyslog
+if [[ $disable_syslog =~ ^[Yy]$ ]];
+then
+	service rsyslog stop
+	systemctl disable rsyslog
+fi
 
-# install jupyter_clickable_image_widget
-echo $password | sudo -S npm install -g typescript
-git clone https://github.com/jaybdub/jupyter_clickable_image_widget
-cd jupyter_clickable_image_widget
+# install jupyter lab
+if [[ $install_jupyter =~ ^[Yy]$ ]];
+then
+	echo "Installing jupyter lab"
+	curl -sL https://deb.nodesource.com/setup_10.x | sudo -S bash -
+	apt install -y nodejs 
+	pip3 install -U jupyter jupyterlab
+	jupyter labextension install @jupyter-widgets/jupyterlab-manager
+	jupyter labextension install @jupyterlab/statusbar
+	jupyter lab --generate-config
+	# set jupyter password
+	python3 -c "from notebook.auth.security import set_password; set_password('$jupyter_password', '$HOME/.jupyter/jupyter_notebook_config.json')"
+	# install jupyter clickable image widget
 
-# allow next command to fail
-set +e
-echo $password | sudo -S python3 setup.py build
+	echo "Installing jupyter clickable image widget"
+	pushd $TEMP_DIR
+	git clone https://github.com/jaybdub/jupyter_clickable_image_widget
+	cd jupyter_clickable_image_widget
+	pip3 install -e .
+	jupyter labextension install js
+	cd ..
+	popd
 
-set -e
-echo $password | sudo -S npm run build
-echo $password | sudo -S pip3 install .
-echo $password | sudo -S jupyter labextension install .
-echo $password | sudo -S jupyter labextension install @jupyter-widgets/jupyterlab-manager
+fi
+
+# enable 4GB SWAP
+if [[ $install_swap =~ ^[Yy]$ ]];
+then
+	SWAP_FILE=/var/swapfile
+	if [[ ! -f $SWAP_FILE ]];
+	then
+		echo Adding $swap_size swap to $SWAP_FILE
+		fallocate -l $swap_size $SWAP_FILE
+		chmod 600 $SWAP_FILE
+		mkswap $SWAP_FILE
+		swapon $SWAP_FILE
+		echo "$SWAP_FILE swap swap defaults 0 0" >> /etc/fstab
+	else
+		echo "Not installing swap file because it already exists"
+	fi
+fi
+
+# install jetcard display service
+if [[ $install_display_service =~ ^[Yy]$ ]]
+then
+	echo "Installing jetcard_display.service..."
+	python3 -m jetcard.create_display_service
+	mv jetcard_display.service /etc/systemd/system/jetcard_display.service
+	systemctl enable jetcard_display
+	systemctl start jetcard_display
+fi
+
+# install jetcard jupyter service
+if [[ $install_jupyter_service =~ ^[Yy]$ ]]
+then
+	echo "Installing jetcard_jupyter.service..."
+	python3 -m jetcard.create_jupyter_service
+	mv jetcard_jupyter.service /etc/systemd/system/jetcard_jupyter.service
+	systemctl enable jetcard_jupyter
+	systemctl start jetcard_jupyter
+fi
+
+# install jetbot
+if [[ $install_jetbot =~ ^[Yy]$ ]]
+then
+	mkdir -p "$(dirname $jetbot_dir)"
+	if [[ ! -d $jetbot_dir ]]
+	then
+		echo "Cloning JetBot"
+		git clone https://github.com/NVIDIA-AI-IOT/jetbot $jetbot_dir
+	fi
+	pushd $jetbot_dir
+	sudo python3 setup.py install
+	popd
+fi
+
+# install jetracer
+if [[ $install_jetracer =~ ^[Yy]$ ]]
+then
+	echo "Installing JetRacer"
+	mkdir -p "$(dirname $jetracer_dir)"
+	if [[ ! -d $jetracer_dir ]];
+	then
+		echo "Cloning JetRacer"
+		git clone https://github.com/NVIDIA-AI-IOT/jetracer $jetracer_dir
+	fi
+	pushd $jetracer_dir
+	sudo python3 setup.py install
+	popd
+fi
+
+# install jetcam
+if [[ $install_jetcam =~ ^[Yy]$ ]]
+then
+	mkdir -p "$(dirname $jetcam_dir)"
+	if [[ ! -d $jetcam_dir ]];
+	then
+		echo "Cloning JetCam"
+		git clone https://github.com/NVIDIA-AI-IOT/jetcam $jetcam_dir
+	fi
+	pushd $jetcam_dir
+	sudo python3 setup.py install
+	popd
+fi
