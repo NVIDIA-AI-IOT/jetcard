@@ -2,117 +2,186 @@
 
 set -e
 
-password=$1
+password='jetson'
 
-# fix NTP server
-FILE="/etc/systemd/timesyncd.conf"
-echo $password | sudo -S bash -c "echo 'NTP=0.arch.pool.ntp.org 1.arch.pool.ntp.org 2.arch.pool.ntp.org 3.arch.pool.ntp.org' >> $FILE"
-echo $password | sudo -S bash -c "echo 'FallbackNTP=0.pool.ntp.org 1.pool.ntp.org 0.us.pool.ntp.org' >> $FILE"
-cat $FILE
-echo $password | sudo -S systemctl restart systemd-timesyncd.service
+# Record the time this script starts
+date
 
-# fix USB device mode
-DIR="/opt/nvidia/l4t-usb-device-mode/"
-echo $password | sudo -S cp $DIR/nv-l4t-usb-device-mode.sh $DIR/nv-l4t-usb-device-mode.sh.orig
-echo $password | sudo -S cp $DIR/nv-l4t-usb-device-mode-stop.sh $DIR/nv-l4t-usb-device-mode-stop.sh.orig
-cat $DIR/nv-l4t-usb-device-mode.sh | grep dhcpd_.*=
-cat $DIR/nv-l4t-usb-device-mode-stop.sh | grep dhcpd_.*=
-echo $password | sudo -S sed -i 's|${script_dir}/dhcpd.leases|/run/dhcpd.leases|g' $DIR/nv-l4t-usb-device-mode.sh
-echo $password | sudo -S sed -i 's|${script_dir}/dhcpd.pid|/run/dhcpd.pid|g' $DIR/nv-l4t-usb-device-mode.sh
-echo $password | sudo -S sed -i 's|${script_dir}/dhcpd.leases|/run/dhcpd.leases|g' $DIR/nv-l4t-usb-device-mode-stop.sh
-echo $password | sudo -S sed -i 's|${script_dir}/dhcpd.pid|/run/dhcpd.pid|g' $DIR/nv-l4t-usb-device-mode-stop.sh
-cat $DIR/nv-l4t-usb-device-mode.sh | grep dhcpd_.*=
-cat $DIR/nv-l4t-usb-device-mode-stop.sh | grep dhcpd_.*=
+# Get the full dir name of this script
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-# enable i2c permissions
-echo $password | sudo -S usermod -aG i2c $USER
+# Keep updating the existing sudo time stamp
+sudo -v
+while true; do sudo -n true; sleep 120; kill -0 "$$" || exit; done 2>/dev/null &
 
-# install pip and some apt dependencies
-echo $password | sudo -S apt-get update
-echo $password | sudo -S apt install -y python3-pip python3-pil python3-smbus python3-matplotlib cmake
-echo $password | sudo -S pip3 install -U pip
-echo $password | sudo -S pip3 install flask
-echo $password | sudo -S pip3 install -U --upgrade numpy
+# Enable i2c permissions
+echo "\e[100m Enable i2c permissions \e[0m"
+sudo usermod -aG i2c $USER
 
-# install tensorflow
-echo $password | sudo -S apt-get install -y libhdf5-serial-dev hdf5-tools libhdf5-dev zlib1g-dev zip libjpeg8-dev
-echo $password | sudo -S pip3 install -U numpy grpcio absl-py py-cpuinfo psutil portpicker six mock requests gast h5py astor termcolor protobuf keras-applications keras-preprocessing wrapt google-pasta
-echo $password | sudo -S pip3 install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v42 tensorflow-gpu
+# Install pip and some python dependencies
+echo "\e[104m Install pip and some python dependencies \e[0m"
+sudo apt-get update
+sudo apt install -y python3-pip python3-pil python3-smbus python3-matplotlib cmake
+sudo -H pip3 install --upgrade pip
+sudo -H pip3 install flask
+#sudo -H pip3 install --upgrade numpy # we need numpy 1.16.1 for tensorflow 
 
-# install pytorch
-wget https://nvidia.box.com/shared/static/veo87trfaawj5pfwuqvhl6mzc5b55fbj.whl -O torch-1.1.0a0+b457266-cp36-cp36m-linux_aarch64.whl
-echo $password | sudo -S pip3 install -U numpy torch-1.1.0a0+b457266-cp36-cp36m-linux_aarch64.whl
-echo $password | sudo -S pip3 install -U torchvision
+# Install jtop
+echo "\e[100m Install jtop \e[0m"
+sudo -H pip install jetson-stats 
+
+
+# Install the pre-built TensorFlow pip wheel
+echo "\e[48;5;202m Install the pre-built TensorFlow pip wheel \e[0m"
+sudo apt-get update
+sudo apt-get install -y libhdf5-serial-dev hdf5-tools libhdf5-dev zlib1g-dev zip libjpeg8-dev liblapack-dev libblas-dev gfortran
+sudo apt-get install -y python3-pip
+sudo -H pip3 install -U pip testresources setuptools==49.6.0 
+sudo -H pip3 install -U numpy==1.16.1 future==0.18.2 mock==3.0.5 h5py==2.10.0 keras_preprocessing==1.1.1 keras_applications==1.0.8 gast==0.2.2 futures protobuf pybind11
+sudo -H pip3 install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v45 'tensorflow<2'
+
+# Install the pre-built PyTorch pip wheel 
+echo "\e[45m Install the pre-built PyTorch pip wheel  \e[0m"
+cd
+if [ ! -f torch-1.6.0-cp36-cp36m-linux_aarch64.whl  ]; then
+    wget -N https://nvidia.box.com/shared/static/9eptse6jyly1ggt9axbja2yrmj6pbarc.whl -O torch-1.6.0-cp36-cp36m-linux_aarch64.whl 
+fi
+
+sudo apt-get install -y python3-pip libopenblas-base libopenmpi-dev 
+sudo -H pip3 install Cython
+#sudo -H pip3 install numpy torch-1.6.0-cp36-cp36m-linux_aarch64.whl # we need numpy 1.16.1 for tensorflow 
+sudo -H pip3 install torch-1.6.0-cp36-cp36m-linux_aarch64.whl
+
+# Install torchvision package
+echo "\e[45m Install torchvision package \e[0m"
+sudo apt-get install -y libavformat-dev libswscale-dev
+cd
+if [ ! -d torchvision  ]; then
+    git clone https://github.com/pytorch/vision torchvision 
+fi
+cd torchvision
+git checkout tags/v0.7.0
+sudo -H python3 setup.py install
+cd  ../
+pip install 'pillow<7'
 
 # setup Jetson.GPIO
-echo $password | sudo -S groupadd -f -r gpio
-echo $password | sudo -S usermod -a -G gpio $USER
-echo $password | sudo -S cp /opt/nvidia/jetson-gpio/etc/99-gpio.rules /etc/udev/rules.d/
-echo $password | sudo -S udevadm control --reload-rules
-echo $password | sudo -S udevadm trigger
+#echo "\e[100m Install torchvision package \e[0m"
+#sudo groupadd -f -r gpio
+#sudo -S usermod -a -G gpio $USER
+#sudo cp /opt/nvidia/jetson-gpio/etc/99-gpio.rules /etc/udev/rules.d/
+#sudo udevadm control --reload-rules
+#sudo udevadm trigger
 
-# install traitlets (master)
-echo $password | sudo -S python3 -m pip install git+https://github.com/ipython/traitlets@master
+# Install traitlets (master, to support the unlink() method)
+echo "\e[48;5;172m Install traitlets \e[0m"
+#sudo -H python3 -m pip install git+https://github.com/ipython/traitlets@master
+sudo python3 -m pip install git+https://github.com/ipython/traitlets@dead2b8cdde5913572254cf6dc70b5a6065b86f8
 
-# install jupyter lab
-echo $password | sudo -S apt install -y nodejs npm
-echo $password | sudo -S pip3 install -U jupyter jupyterlab
-echo $password | sudo -S jupyter labextension install @jupyter-widgets/jupyterlab-manager
-echo $password | sudo -S jupyter labextension install @jupyterlab/statusbar
+# Install newer version of Node.js for the latest Jupyter Lab
+echo "\e[48;5;172m Install Node.js \e[0m"
+sudo apt install -y curl
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+export NVM_DIR="$HOME/.nvm" # nvm would be picked when terminal is restarted, but we are still installing packages
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+nvm install 12.18.1
+curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+# Install Jupyter Lab
+echo "\e[48;5;172m Install Jupyter Lab \e[0m"
+sudo apt install -y libffi-dev
+sudo -H pip3 install jupyter jupyterlab
+sudo -H jupyter labextension install @jupyter-widgets/jupyterlab-manager
+
 jupyter lab --generate-config
-
-# set jupyter password
 python3 -c "from notebook.auth.security import set_password; set_password('$password', '$HOME/.jupyter/jupyter_notebook_config.json')"
 
-# install jetcard
-echo $password | sudo -S python3 setup.py install
+# fix for Traitlet permission error
+sudo chown -R $USER:$USER ~/.local/share/
 
-# install jetcard display service
+# Install jetcard
+echo "\e[44m Install jetcard \e[0m"
+cd $DIR
+pwd
+sudo -H python3 setup.py install
+
+# Install jetcard display service
+echo "\e[44m Install jetcard display service \e[0m"
 python3 -m jetcard.create_display_service
-echo $password | sudo -S mv jetcard_display.service /etc/systemd/system/jetcard_display.service
-echo $password | sudo -S systemctl enable jetcard_display
-echo $password | sudo -S systemctl start jetcard_display
+sudo mv jetcard_display.service /etc/systemd/system/jetcard_display.service
+sudo systemctl enable jetcard_display
+sudo systemctl start jetcard_display
 
-# install jetcard jupyter service
+# Install jetcard jupyter service
+echo "\e[44m Install jetcard jupyter service \e[0m"
 python3 -m jetcard.create_jupyter_service
-echo $password | sudo -S mv jetcard_jupyter.service /etc/systemd/system/jetcard_jupyter.service
-echo $password | sudo -S systemctl enable jetcard_jupyter
-echo $password | sudo -S systemctl start jetcard_jupyter
+sudo mv jetcard_jupyter.service /etc/systemd/system/jetcard_jupyter.service
+sudo systemctl enable jetcard_jupyter
+sudo systemctl start jetcard_jupyter
 
-# make swapfile
-echo $password | sudo -S fallocate -l 4G /var/swapfile
-echo $password | sudo -S chmod 600 /var/swapfile
-echo $password | sudo -S mkswap /var/swapfile
-echo $password | sudo -S swapon /var/swapfile
-echo $password | sudo -S bash -c 'echo "/var/swapfile swap swap defaults 0 0" >> /etc/fstab'
+# Make swapfile
+echo "\e[46m Make swapfile \e[0m"
+cd
+if [ ! -f /var/swapfile ]; then
+	sudo fallocate -l 4G /var/swapfile
+	sudo chmod 600 /var/swapfile
+	sudo mkswap /var/swapfile
+	sudo swapon /var/swapfile
+	sudo bash -c 'echo "/var/swapfile swap swap defaults 0 0" >> /etc/fstab'
+else
+	echo "Swapfile already exists"
+fi
 
-# install TensorFlow models repository
-git clone https://github.com/tensorflow/models
-cd models/research
-git checkout 5f4d34fc
-wget -O protobuf.zip https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-aarch_64.zip
-# wget -O protobuf.zip https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-x86_64.zip
-unzip protobuf.zip
-./bin/protoc object_detection/protos/*.proto --python_out=.
-echo $password | sudo -S python3 setup.py install
-cd slim
-echo $password | sudo -S python3 setup.py install
+# Install TensorFlow models repository
+echo "\e[48;5;202m Install TensorFlow models repository \e[0m"
+cd
+url="https://github.com/tensorflow/models"
+tf_models_dir="TF-models"
+if [ ! -d "$tf_models_dir" ] ; then
+	git clone $url $tf_models_dir
+	cd "$tf_models_dir"/research
+	git checkout 5f4d34fc
+	wget -O protobuf.zip https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-aarch_64.zip
+	# wget -O protobuf.zip https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-x86_64.zip
+	unzip protobuf.zip
+	./bin/protoc object_detection/protos/*.proto --python_out=.
+	sudo -H python3 setup.py install
+	cd slim
+	sudo -H python3 setup.py install
+fi
 
-# disable syslog to prevent large log files from collecting
-echo $password | sudo -S service rsyslog stop
-echo $password | sudo -S systemctl disable rsyslog
+# Disable syslog to prevent large log files from collecting
+#sudo service rsyslog stop
+#sudo systemctl disable rsyslog
 
-# install jupyter_clickable_image_widget
-echo $password | sudo -S npm install -g typescript
-git clone https://github.com/jaybdub/jupyter_clickable_image_widget
+# Install jupyter_clickable_image_widget
+echo "\e[42m Install jupyter_clickable_image_widget \e[0m"
+cd
+sudo apt-get install libssl1.0-dev
+#sudo apt-get install nodejs-dev node-gyp libssl1.0-dev
+#sudo apt-get install npm
+if [ ! -d jupyter_clickable_image_widget  ]; then
+    git clone https://github.com/jaybdub/jupyter_clickable_image_widget
+fi
 cd jupyter_clickable_image_widget
+git checkout no_typescript
+sudo -H pip3 install -e .
+sudo jupyter labextension install js
+sudo jupyter lab build
 
-# allow next command to fail
-set +e
-echo $password | sudo -S python3 setup.py build
+# there is a chance that password does not work until the server is restarted
+sudo service jetcard_jupyter restart
 
-set -e
-echo $password | sudo -S npm run build
-echo $password | sudo -S pip3 install .
-echo $password | sudo -S jupyter labextension install .
-echo $password | sudo -S jupyter labextension install @jupyter-widgets/jupyterlab-manager
+
+# Install remaining dependencies for projects
+echo "\e[104m Install remaining dependencies for projects \e[0m"
+sudo apt-get install python-setuptools
+
+
+echo "\e[42m All done! \e[0m"
+
+#record the time this script ends
+date
+
