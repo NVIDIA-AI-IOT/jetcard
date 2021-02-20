@@ -171,6 +171,9 @@ sudo -H pip3 install -e .
 sudo jupyter labextension install js
 sudo jupyter lab build
 
+# there is a chance that password does not work until the server is restarted
+sudo service jetcard_jupyter restart
+
 
 # Install remaining dependencies for projects
 echo "\e[104m Install remaining dependencies for projects \e[0m"
