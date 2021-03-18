@@ -21,14 +21,40 @@ sudo usermod -aG i2c $USER
 # Install pip and some python dependencies
 echo "\e[104m Install pip and some python dependencies \e[0m"
 sudo apt-get update
-sudo apt install -y python3-pip python3-pil python3-smbus python3-matplotlib cmake
+sudo apt install -y python3-pip python3-pil python3-smbus python3-matplotlib cmake curl
 sudo -H pip3 install --upgrade pip
 sudo -H pip3 install flask
 sudo -H pip3 install --upgrade numpy
 
 # Install jtop
 echo "\e[100m Install jtop \e[0m"
-sudo -H pip install jetson-stats 
+sudo -H pip3 install jetson-stats 
+
+
+
+# Install the pre-built PyTorch pip wheel 
+echo "\e[45m Install the pre-built PyTorch pip wheel  \e[0m"
+cd
+wget -N https://nvidia.box.com/shared/static/9eptse6jyly1ggt9axbja2yrmj6pbarc.whl -O torch-1.6.0-cp36-cp36m-linux_aarch64.whl 
+sudo apt-get install -y python3-pip libopenblas-base libopenmpi-dev 
+sudo -H pip3 install Cython
+sudo -H pip3 install numpy==1.19.4 torch-1.6.0-cp36-cp36m-linux_aarch64.whl
+
+# Install torchvision package
+echo "\e[45m Install torchvision package \e[0m"
+cd
+git clone https://github.com/pytorch/vision torchvision
+cd torchvision
+git checkout tags/v0.7.0
+sudo -H python3 setup.py install
+cd  ../
+sudo -H pip3 install pillow
+
+# pip dependencies for pytorch-ssd
+echo "\e[45m Install dependencies for pytorch-ssd \e[0m"
+sudo -H pip3 install --verbose --upgrade Cython && \
+sudo -H pip3 install --verbose boto3 pandas
+
 
 
 # Install the pre-built TensorFlow pip wheel
@@ -40,43 +66,36 @@ sudo -H pip3 install -U pip setuptools
 sudo -H pip3 install -U numpy grpcio absl-py py-cpuinfo psutil portpicker six mock requests gast h5py astor termcolor protobuf keras-applications keras-preprocessing wrapt google-pasta
 sudo -H pip3 install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v43 tensorflow==1.15.2+nv20.3
 
-# Install the pre-built PyTorch pip wheel 
-echo "\e[45m Install the pre-built PyTorch pip wheel  \e[0m"
+# Install TensorFlow models repository
+echo "\e[48;5;202m Install TensorFlow models repository \e[0m"
 cd
-wget -N https://nvidia.box.com/shared/static/9eptse6jyly1ggt9axbja2yrmj6pbarc.whl -O torch-1.6.0-cp36-cp36m-linux_aarch64.whl 
-sudo apt-get install -y python3-pip libopenblas-base libopenmpi-dev 
-sudo -H pip3 install Cython
-sudo -H pip3 install numpy torch-1.6.0-cp36-cp36m-linux_aarch64.whl
+url="https://github.com/tensorflow/models"
+tf_models_dir="TF-models"
+if [ ! -d "$tf_models_dir" ] ; then
+	git clone $url $tf_models_dir
+	cd "$tf_models_dir"/research
+	git checkout 5f4d34fc
+	wget -O protobuf.zip https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-aarch_64.zip
+	# wget -O protobuf.zip https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-x86_64.zip
+	unzip protobuf.zip
+	./bin/protoc object_detection/protos/*.proto --python_out=.
+	sudo -H python3 setup.py install
+	cd slim
+	sudo -H python3 setup.py install
+fi
 
-# Install torchvision package
-echo "\e[45m Install torchvision package \e[0m"
-cd
-git clone https://github.com/pytorch/vision torchvision
-cd torchvision
-git checkout tags/v0.7.0
-sudo -H python3 setup.py install
-cd  ../
-pip install 'pillow<7'
 
-# setup Jetson.GPIO
-#echo "\e[100m Install torchvision package \e[0m"
-#sudo groupadd -f -r gpio
-#sudo -S usermod -a -G gpio $USER
-#sudo cp /opt/nvidia/jetson-gpio/etc/99-gpio.rules /etc/udev/rules.d/
-#sudo udevadm control --reload-rules
-#sudo udevadm trigger
 
 # Install traitlets (master, to support the unlink() method)
 echo "\e[48;5;172m Install traitlets \e[0m"
 #sudo -H python3 -m pip install git+https://github.com/ipython/traitlets@master
 sudo python3 -m pip install git+https://github.com/ipython/traitlets@dead2b8cdde5913572254cf6dc70b5a6065b86f8
 
-# Install Jupyter Lab
-echo "\e[48;5;172m Install Jupyter Lab \e[0m"
-sudo apt install -y curl
+# Install JupyterLab (lock to 2.2.6, latest as of Sept 2020)
+echo "\e[48;5;172m Install Jupyter Lab 2.2.6 \e[0m"
 curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
-sudo apt install -y nodejs libffi-dev
-sudo -H pip3 install jupyter jupyterlab
+sudo apt install -y nodejs libffi-dev libssl1.0-dev 
+sudo -H pip3 install jupyter jupyterlab==2.2.6 --verbose
 sudo -H jupyter labextension install @jupyter-widgets/jupyterlab-manager
 
 jupyter lab --generate-config
@@ -84,6 +103,46 @@ python3 -c "from notebook.auth.security import set_password; set_password('$pass
 
 # fix for Traitlet permission error
 sudo chown -R jetson:jetson ~/.local/share/
+
+# Install jupyter_clickable_image_widget
+echo "\e[42m Install jupyter_clickable_image_widget \e[0m"
+cd
+git clone https://github.com/jaybdub/jupyter_clickable_image_widget
+cd jupyter_clickable_image_widget
+git checkout tags/v0.1
+sudo -H pip3 install -e .
+sudo jupyter labextension install js
+sudo jupyter lab build
+
+# install version of traitlets with dlink.link() feature
+# (added after 4.3.3 and commits after the one below only support Python 3.7+) 
+#
+sudo python3 -m pip install git+https://github.com/ipython/traitlets@dead2b8cdde5913572254cf6dc70b5a6065b86f8
+
+
+
+# =================
+# INSTALL torch2trt
+# =================
+cd 
+git clone https://github.com/NVIDIA-AI-IOT/torch2trt 
+cd torch2trt 
+sudo -H python3 setup.py install --plugins
+
+# ========================================
+# Install other misc packages for trt_pose
+# ========================================
+sudo -H pip3 install tqdm cython pycocotools 
+sudo apt-get install python3-matplotlib
+sudo -H pip3 install traitlets
+sudo -H pip3 install -U scikit-learn
+
+# ==============================================
+# Install other misc packages for point_detector
+# ==============================================
+sudo -H pip3 install tensorboard
+sudo -H pip3 install segmentation-models-pytorch
+
 
 # Install jetcard
 echo "\e[44m Install jetcard \e[0m"
@@ -118,45 +177,12 @@ else
 	echo "Swapfile already exists"
 fi
 
-# Install TensorFlow models repository
-echo "\e[48;5;202m Install TensorFlow models repository \e[0m"
-cd
-url="https://github.com/tensorflow/models"
-tf_models_dir="TF-models"
-if [ ! -d "$tf_models_dir" ] ; then
-	git clone $url $tf_models_dir
-	cd "$tf_models_dir"/research
-	git checkout 5f4d34fc
-	wget -O protobuf.zip https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-aarch_64.zip
-	# wget -O protobuf.zip https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-x86_64.zip
-	unzip protobuf.zip
-	./bin/protoc object_detection/protos/*.proto --python_out=.
-	sudo -H python3 setup.py install
-	cd slim
-	sudo -H python3 setup.py install
-fi
-
-# Disable syslog to prevent large log files from collecting
-#sudo service rsyslog stop
-#sudo systemctl disable rsyslog
-
-# Install jupyter_clickable_image_widget
-echo "\e[42m Install jupyter_clickable_image_widget \e[0m"
-cd
-sudo apt-get install libssl1.0-dev
-#sudo apt-get install nodejs-dev node-gyp libssl1.0-dev
-#sudo apt-get install npm
-git clone https://github.com/jaybdub/jupyter_clickable_image_widget
-cd jupyter_clickable_image_widget
-git checkout no_typescript
-sudo -H pip3 install -e .
-sudo jupyter labextension install js
-sudo jupyter lab build
 
 
 # Install remaining dependencies for projects
 echo "\e[104m Install remaining dependencies for projects \e[0m"
 sudo apt-get install python-setuptools
+
 
 
 echo "\e[42m All done! \e[0m"

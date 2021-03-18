@@ -40,7 +40,7 @@ You may now insert the SD card into the Jetson Nano, power on, and enjoy the pre
     ```bash
     git clone https://github.com/NVIDIA-AI-IOT/jetcard
     cd jetcard
-    ./install.sh <password>
+    ./install.sh
     ```
     
 Once the ``install.sh`` script finishes, your system should be configured identically to the SD card image mentioned above.
