@@ -24,7 +24,6 @@ sudo apt-get update
 sudo apt install -y python3-pip python3-pil python3-smbus python3-matplotlib cmake curl
 sudo -H pip3 install --upgrade pip
 sudo -H pip3 install flask
-sudo -H pip3 install --upgrade numpy
 
 # Install jtop
 echo "\e[100m Install jtop \e[0m"
@@ -45,6 +44,7 @@ echo "\e[45m Install torchvision package \e[0m"
 cd
 git clone https://github.com/pytorch/vision torchvision
 cd torchvision
+sudo apt-get install -y libavcodec-dev libavformat-dev libswscale-dev
 git checkout tags/v0.7.0
 sudo -H python3 setup.py install
 cd  ../
@@ -60,11 +60,12 @@ sudo -H pip3 install --verbose boto3 pandas
 # Install the pre-built TensorFlow pip wheel
 echo "\e[48;5;202m Install the pre-built TensorFlow pip wheel \e[0m"
 sudo apt-get update
-sudo apt-get install -y libhdf5-serial-dev hdf5-tools libhdf5-dev zlib1g-dev zip libjpeg8-dev
+sudo apt-get install -y libhdf5-serial-dev hdf5-tools libhdf5-dev zlib1g-dev zip libjpeg8-dev liblapack-dev libblas-dev gfortran
+
 sudo apt-get install -y python3-pip
-sudo -H pip3 install -U pip setuptools
-sudo -H pip3 install -U numpy grpcio absl-py py-cpuinfo psutil portpicker six mock requests gast h5py astor termcolor protobuf keras-applications keras-preprocessing wrapt google-pasta
-sudo -H pip3 install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v43 tensorflow==1.15.2+nv20.3
+sudo -H pip3 install -U pip testresources setuptools==49.6.0 
+sudo -H pip3 install -U numpy==1.19.4 future==0.18.2 mock==3.0.5 h5py==2.10.0 keras_preprocessing==1.1.1 keras_applications==1.0.8 gast==0.2.2 futures protobuf pybind11
+sudo -H pip3 install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v45  'tensorflow<2'
 
 # Install TensorFlow models repository
 echo "\e[48;5;202m Install TensorFlow models repository \e[0m"
