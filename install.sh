@@ -8,22 +8,17 @@ password='jetson'
 date
 
 # Get the full dir name of this script
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 # Keep updating the existing sudo time stamp
 sudo -v
 while true; do sudo -n true; sleep 120; kill -0 "$$" || exit; done 2>/dev/null &
 
-# Enable i2c permissions
-echo "\e[100m Enable i2c permissions \e[0m"
-sudo usermod -aG i2c $USER
-
 # Install pip and some python dependencies
 echo "\e[104m Install pip and some python dependencies \e[0m"
 sudo apt-get update
-sudo apt install -y python3-pip python3-pil python3-smbus python3-matplotlib cmake curl
+sudo apt install -y python3-pip python3-setuptools python3-pil python3-smbus python3-matplotlib cmake curl
 sudo -H pip3 install --upgrade pip
-sudo -H pip3 install flask
 
 # Install jtop
 echo "\e[100m Install jtop \e[0m"
@@ -103,7 +98,7 @@ jupyter lab --generate-config
 python3 -c "from notebook.auth.security import set_password; set_password('$password', '$HOME/.jupyter/jupyter_notebook_config.json')"
 
 # fix for Traitlet permission error
-sudo chown -R jetson:jetson ~/.local/share/
+#sudo chown -R jetson:jetson ~/.local/share/
 
 # Install jupyter_clickable_image_widget
 echo "\e[42m Install jupyter_clickable_image_widget \e[0m"
@@ -149,6 +144,8 @@ sudo -H pip3 install segmentation-models-pytorch
 echo "\e[44m Install jetcard \e[0m"
 cd $DIR
 pwd
+sudo apt-get install python3-pip python3-setuptools python3-pil python3-smbus
+sudo -H pip3 install flask
 sudo -H python3 setup.py install
 
 # Install jetcard display service
