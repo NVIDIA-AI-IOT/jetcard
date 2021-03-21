@@ -38,7 +38,7 @@ You may now insert the SD card into the Jetson Nano, power on, and enjoy the pre
 
 | Platform | Board revision | JetPack Version | Download | MD5 Checksum | branch |
 | -------- | -------------- | --------------- | -------- |------------- | ------ |
-| Jetson Nano (4GB) | `A02` | 4.2|  [jetcard_v0p0p0.zip](https://drive.google.com/open?id=1wXD1CwtxiH5Mz4uSmIZ76fd78zDQltW_) | f7b635a651e4a2228e3812360cce74e3 | [`jetpack_4.2`]()
+| Jetson Nano (4GB) | `A02` | 4.2|  [jetcard_v0p0p0.zip](https://drive.google.com/open?id=1wXD1CwtxiH5Mz4uSmIZ76fd78zDQltW_) | f7b635a651e4a2228e3812360cce74e3 | [`jetpack_4.2`](https://github.com/NVIDIA-AI-IOT/jetcard/tree/jetpack_4.2)
 
 ### Option 2 - Create JetCard from scratch
 
