@@ -21,7 +21,7 @@ STATS_SERVICE_NAME = 'jetcard_display'
 
 
 def get_stats_service():
-    return STATS_SERVICE_TEMPLATE % (getpass.getuser(), os.environ['HOME'])
+    return STATS_SERVICE_TEMPLATE % ("root", os.environ['HOME'])
 
 
 if __name__ == '__main__':
