@@ -97,11 +97,6 @@ sudo -H jupyter labextension install @jupyter-widgets/jupyterlab-manager
 jupyter lab --generate-config
 python3 -c "from notebook.auth.security import set_password; set_password('$password', '$HOME/.jupyter/jupyter_notebook_config.json')"
 
-# fix for Traitlet permission error
-sudo chown -R jetson:jetson ~/.local/
-sudo chown -R jetson:jetson ~/.local/share/
-sudo chown -R jetson:jetson /usr/local/share/jupyter/lab/settings/build_config.json
-
 
 # Install jupyter_clickable_image_widget
 echo "\e[42m Install jupyter_clickable_image_widget \e[0m"
@@ -113,11 +108,14 @@ sudo -H pip3 install -e .
 sudo -H jupyter labextension install js
 sudo -H jupyter lab build
 
+# fix for permission error
+sudo chown -R jetson:jetson /usr/local/share/jupyter/lab/settings/build_config.json
+
 # install version of traitlets with dlink.link() feature
 # (added after 4.3.3 and commits after the one below only support Python 3.7+) 
 #
 sudo -H python3 -m pip install git+https://github.com/ipython/traitlets@dead2b8cdde5913572254cf6dc70b5a6065b86f8
-
+sudo -H jupyter lab build
 
 
 # =================
