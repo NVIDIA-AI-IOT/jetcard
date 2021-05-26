@@ -100,6 +100,8 @@ python3 -c "from notebook.auth.security import set_password; set_password('$pass
 # fix for Traitlet permission error
 sudo chown -R jetson:jetson ~/.local/
 sudo chown -R jetson:jetson ~/.local/share/
+sudo chown -R jetson:jetson /usr/local/share/jupyter/lab/settings/build_config.json
+
 
 # Install jupyter_clickable_image_widget
 echo "\e[42m Install jupyter_clickable_image_widget \e[0m"
