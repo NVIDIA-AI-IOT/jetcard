@@ -85,7 +85,7 @@ fi
 # Install traitlets (master, to support the unlink() method)
 echo "\e[48;5;172m Install traitlets \e[0m"
 #sudo -H python3 -m pip install git+https://github.com/ipython/traitlets@master
-sudo python3 -m pip install git+https://github.com/ipython/traitlets@dead2b8cdde5913572254cf6dc70b5a6065b86f8
+sudo -H python3 -m pip install git+https://github.com/ipython/traitlets@dead2b8cdde5913572254cf6dc70b5a6065b86f8
 
 # Install JupyterLab (lock to 2.2.6, latest as of Sept 2020)
 echo "\e[48;5;172m Install Jupyter Lab 2.2.6 \e[0m"
@@ -98,7 +98,8 @@ jupyter lab --generate-config
 python3 -c "from notebook.auth.security import set_password; set_password('$password', '$HOME/.jupyter/jupyter_notebook_config.json')"
 
 # fix for Traitlet permission error
-#sudo chown -R jetson:jetson ~/.local/share/
+sudo chown -R jetson:jetson ~/.local/
+sudo chown -R jetson:jetson ~/.local/share/
 
 # Install jupyter_clickable_image_widget
 echo "\e[42m Install jupyter_clickable_image_widget \e[0m"
@@ -107,13 +108,13 @@ git clone https://github.com/jaybdub/jupyter_clickable_image_widget
 cd jupyter_clickable_image_widget
 git checkout tags/v0.1
 sudo -H pip3 install -e .
-sudo jupyter labextension install js
-sudo jupyter lab build
+sudo -H jupyter labextension install js
+sudo -H jupyter lab build
 
 # install version of traitlets with dlink.link() feature
 # (added after 4.3.3 and commits after the one below only support Python 3.7+) 
 #
-sudo python3 -m pip install git+https://github.com/ipython/traitlets@dead2b8cdde5913572254cf6dc70b5a6065b86f8
+sudo -H python3 -m pip install git+https://github.com/ipython/traitlets@dead2b8cdde5913572254cf6dc70b5a6065b86f8
 
 
 
