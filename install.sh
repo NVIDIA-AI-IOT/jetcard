@@ -119,12 +119,28 @@ sudo -H jupyter lab build
 
 
 # =================
+# INSTALL jetcam
+# =================
+cd $HOME
+git clone https://github.com/NVIDIA-AI-IOT/jetcam
+cd jetcam
+sudo -H python3 setup.py install
+
+# =================
 # INSTALL torch2trt
 # =================
 cd 
 git clone https://github.com/NVIDIA-AI-IOT/torch2trt 
 cd torch2trt 
 sudo -H python3 setup.py install --plugins
+
+# =================
+# INSTALL jetracer
+# =================
+cd $HOME
+git clone https://github.com/NVIDIA-AI-IOT/jetracer
+cd jetracer
+sudo -H python3 setup.py install
 
 # ========================================
 # Install other misc packages for trt_pose
