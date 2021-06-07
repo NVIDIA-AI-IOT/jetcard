@@ -28,17 +28,17 @@ You may now insert the SD card into the Jetson Nano, power on, and enjoy the pre
 
 > Please note, the password for the pre-built SD card is ``jetson``
 
-| Platform | Board revision | JetPack Version | Download | MD5 Checksum | branch |
-| -------- | -------------- | --------------- | -------- |------------- | ------ |
-| Jetson Nano (4GB) | `A02` and `B01` | 4.5.1 |  [jetcard_nano-4gb-jp451.zip](https://drive.google.com/file/d/1MX-z7ZCPvUzpN3nGhfZMAgENtK6VnBdh) | 1004e73e034d6df3b5167705546a11f3 | [`jetpack_4.5.1`](https://github.com/NVIDIA-AI-IOT/jetcard/tree/jetpack_4.5.1)
+| Platform | Board revision | JetPack Version | Download | MD5 Checksum |
+| -------- | -------------- | --------------- | -------- |------------- |
+| Jetson Nano (4GB) | `A02` and `B01` | 4.5.1 |  [jetcard_nano-4gb-jp451.zip](https://drive.google.com/file/d/1aPbzQ0_Uja0jVD48oZUAuYYAz10JgbZu/view?usp=sharing) | 3195c91e6069c0418ec3c9736d130d01 |
 
 #### Old Release
 
 > Please note that this image is only for the older `A02` revision of Jetson Nano board, which has only one camera (CSI) connector onboard.
 
-| Platform | Board revision | JetPack Version | Download | MD5 Checksum | branch |
-| -------- | -------------- | --------------- | -------- |------------- | ------ |
-| Jetson Nano (4GB) | `A02` | 4.2|  [jetcard_v0p0p0.zip](https://drive.google.com/open?id=1wXD1CwtxiH5Mz4uSmIZ76fd78zDQltW_) | f7b635a651e4a2228e3812360cce74e3 | [`jetpack_4.2`](https://github.com/NVIDIA-AI-IOT/jetcard/tree/jetpack_4.2)
+| Platform | Board revision | JetPack Version | Download | MD5 Checksum |
+| -------- | -------------- | --------------- | -------- |------------- |
+| Jetson Nano (4GB) | `A02` | 4.2|  [jetcard_v0p0p0.zip](https://drive.google.com/open?id=1wXD1CwtxiH5Mz4uSmIZ76fd78zDQltW_) | f7b635a651e4a2228e3812360cce74e3 | 
 
 ### Option 2 - Create JetCard from scratch
 
