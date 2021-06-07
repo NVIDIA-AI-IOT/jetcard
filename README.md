@@ -24,7 +24,7 @@ Follow the steps below to download JetCard directly or create it from scratch.
 
 You may now insert the SD card into the Jetson Nano, power on, and enjoy the pre-configured system!
 
-### Latest Release (** **but not yet fully verified** ** )
+#### Latest Release (** **but not yet fully verified** ** )
 
 > Please note, the password for the pre-built SD card is ``jetson``
 
@@ -32,7 +32,7 @@ You may now insert the SD card into the Jetson Nano, power on, and enjoy the pre
 | -------- | -------------- | --------------- | -------- |------------- |
 | Jetson Nano (4GB) | `A02` and `B01` | 4.5.1 |  [jetcard_nano-4gb-jp451.zip](https://drive.google.com/file/d/1aPbzQ0_Uja0jVD48oZUAuYYAz10JgbZu/view?usp=sharing) | 3195c91e6069c0418ec3c9736d130d01 |
 
-### Old Release
+#### Old Release
 
 > Please note that this image is only for the older `A02` revision of Jetson Nano board, which has only one camera (CSI) connector onboard.
 
