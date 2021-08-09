@@ -52,36 +52,6 @@ sudo -H pip3 install --verbose boto3 pandas
 
 
 
-# Install the pre-built TensorFlow pip wheel
-echo "\e[48;5;202m Install the pre-built TensorFlow pip wheel \e[0m"
-sudo apt-get update
-sudo apt-get install -y libhdf5-serial-dev hdf5-tools libhdf5-dev zlib1g-dev zip libjpeg8-dev liblapack-dev libblas-dev gfortran
-
-sudo apt-get install -y python3-pip
-sudo -H pip3 install -U pip testresources setuptools==49.6.0 
-sudo -H pip3 install -U numpy==1.19.4 future==0.18.2 mock==3.0.5 h5py==2.10.0 keras_preprocessing==1.1.1 keras_applications==1.0.8 gast==0.2.2 futures protobuf pybind11
-sudo -H pip3 install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v45  'tensorflow<2'
-
-# Install TensorFlow models repository
-echo "\e[48;5;202m Install TensorFlow models repository \e[0m"
-cd
-url="https://github.com/tensorflow/models"
-tf_models_dir="TF-models"
-if [ ! -d "$tf_models_dir" ] ; then
-	git clone $url $tf_models_dir
-	cd "$tf_models_dir"/research
-	git checkout 5f4d34fc
-	wget -O protobuf.zip https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-aarch_64.zip
-	# wget -O protobuf.zip https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-x86_64.zip
-	unzip protobuf.zip
-	./bin/protoc object_detection/protos/*.proto --python_out=.
-	sudo -H python3 setup.py install
-	cd slim
-	sudo -H python3 setup.py install
-fi
-
-
-
 # Install traitlets (master, to support the unlink() method)
 echo "\e[48;5;172m Install traitlets \e[0m"
 #sudo -H python3 -m pip install git+https://github.com/ipython/traitlets@master
