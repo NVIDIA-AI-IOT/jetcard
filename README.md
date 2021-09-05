@@ -20,7 +20,7 @@ Follow the steps below to download JetCard directly or create it from scratch.
 1. Download a JetCard SD card image listed in below table onto a Windows, Linux or Mac *desktop machine*
 2. Insert a 32GB+ SD card into the desktop machine
 3. Using [Etcher](https://www.balena.io/etcher/) select the downloaded zip file and flash it onto the SD card
-4. Remove the SD card from the desktop machinem the desktop machine
+4. Remove the SD card from the desktop machine
 
 You may now insert the SD card into the Jetson Nano, power on, and enjoy the pre-configured system!
 
